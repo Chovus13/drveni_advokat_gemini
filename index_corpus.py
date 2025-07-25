@@ -1,7 +1,7 @@
 # index_corpus.py (FINALNA I ISPRAVLJENA VERZIJA)
 
 import os
-from config import EMBEDDING_MODEL_NAME, VECTOR_DIMENSION, DISTANCE_METRIC, BATCH_SIZE
+from config import DEFAULT_EMBEDDING_MODEL, VECTOR_DIMENSION, DISTANCE_METRIC, BATCH_SIZE, DEFAULT_DEVICE
 import json
 import argparse
 import uuid
@@ -37,8 +37,8 @@ def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
     print("Inicijalizacija klijenata i modela...")
     qdrant_client = QdrantClient(url=qdrant_url)
     embedding_model = SentenceTransformer(
-        EMBEDDING_MODEL_NAME,
-        device=config.DEVICE
+        DEFAULT_EMBEDDING_MODEL,
+        device=DEFAULT_DEVICE
         )
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     setup_qdrant_collection(qdrant_client, collection_name)
