@@ -1,4 +1,4 @@
-# extract_and_structure.py (Verzija 3.0 - Finalna sa kompletnom mapom)
+# extract_and_structure.py (Verzija 5.0 - sa "Kamenom iz Rozete" mapom)
 
 import os
 import re
@@ -7,90 +7,101 @@ import argparse
 import docx
 from tqdm import tqdm
 import logging
+import ftfy
 import config
 
-# --- Podešavanje Logovanja ---
 logging.basicConfig(
     filename='extraction_log.txt',
     level=logging.WARNING,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def fix_legacy_encoding(text: str) -> str:
+def convert_yuscii_to_unicode(text: str) -> str:
     """
-    Popravlja tekst sa specifičnim "slomljenim" karakterima iz starih YU/CP1250 fontova.
-    Ovo je finalna, proširena mapa.
+    Konvertuje tekst iz YUSCII (custom CP1250) rasporeda u ispravan Unicode (UTF-8).
+    Mapa je zasnovana na vašim primerima i standardnim YUSCII rasporedima.
     """
-    # Mapa za prevođenje karaktera
-    correction_map = {
-        # Mala slova
-        '^': 'č',
-        '|': 'đ',
-        '[': 'š',
-        ']': 'ž',
-        '`': 'ć',
-        # Neki fontovi su koristili i ove karaktere
-        '{': 'š',
-        '}': 'ž',
-        '@': 'ž',
-        
-        # Velika slova
-        '~': 'Č',
+    # Ovaj "kamen iz Rozete" je ključan.
+    # Prilagodite ga ako primetite još neke specifične karaktere u vašim dokumentima.
+    yuscii_map = {
+        # Mala slova - na osnovu vašeg primera "Ne}emo li da vidimo ko `eli"
+        '[': 'Š',
+        ']': 'Ć',
         '\\': 'Đ',
-        '<': 'Š',
-        '>': 'Ž',
-        '=': 'Ć',
-    }
+        '@': 'Ž',
+        '^': 'Č',
+        
+        # Velika slova - na osnovu primera "^okolom"
 
-    # Prolazimo kroz mapu i vršimo zamenu
-    for bad_char, good_char in correction_map.items():
-        text = text.replace(bad_char, good_char)
+        '{': 'š', # Pretpostavka na osnovu standarda
+        '}': 'ć', # Pretpostavka na osnovu standarda
+        '|': 'đ', # Pretpostavka na osnovu standarda
+        '~': 'č', # Pretpostavka na osnovu standarda
+        '`': 'ž',
+        
+        # Dvoslovna slova
+        'q': 'lj',
+        'w': 'nj',
+        'x': 'dž',
+        'Q': 'Lj',
+        'W': 'Nj',
+        'X': 'Dž',
+    }
+    
+    # Sortiramo ključeve po dužini, opadajuće.
+    # Ovo osigurava da se "Lj" zameni pre nego što bi se zamenili "L" ili "j".
+    # Iako trenutno nemamo takve slučajeve, pristup je robustan.
+    sorted_keys = sorted(yuscii_map.keys(), key=len, reverse=True)
+    
+    for key in sorted_keys:
+        text = text.replace(key, yuscii_map[key])
         
     return text
 
+def fix_legacy_text(text: str) -> str:
+    """
+    Kompletan, dvostepeni proces čišćenja teksta koji kombinuje
+    specifičnu popravku i generalno "peglanje".
+    """
+    # Korak 1: Hirurški precizna popravka za naš specifičan YU Swiss/YUSCII problem.
+    text = convert_yuscii_to_unicode(text)
+    
+    # Korak 2: Generalno "peglanje" teksta koje popravlja sve ostale
+    # potencijalne greške u kodiranju (poznate kao "mojibake").
+    text = ftfy.fix_text(text)
+    
+    return text
+
+# Ostatak koda je skoro isti, samo poziva novu, jednostavniju funkciju
 def extract_and_clean_document(document: docx.Document) -> tuple[str, dict]:
-    """
-    Prima ceo docx dokument objekat, popravlja enkodiranje, čisti ga i ekstrahuje metapodatke.
-    """
-    # Sastavljanje glavnog teksta iz paragrafa
     main_text = "\n".join([para.text for para in document.paragraphs if para.text])
     
-    # KORAK 1: "Lečenje" teksta pre bilo kakve dalje obrade!
-    main_text = fix_legacy_encoding(main_text)
+    # Pozivamo našu finalnu, dvostepenu funkciju za popravku!
+    main_text = fix_legacy_text(main_text)
     
-    # KORAK 2: Prikupljanje teksta za uklanjanje (boilerplate)
+    # Deo za čišćenje boilerplate teksta
     text_to_remove = set()
     for phrase in config.BOILERPLATE_PHRASES_TO_REMOVE:
         text_to_remove.add(phrase)
-
     if config.REMOVE_HEADERS_FOOTERS:
         for section in document.sections:
-            # Zaglavlja
             for para in section.header.paragraphs:
-                if para.text:
-                    # Prvo "izlečimo" tekst iz headera/footera pa ga onda dodamo za brisanje
-                    text_to_remove.add(fix_legacy_encoding(para.text.strip()))
-            # Podnožja
+                # Važno: I ovde primenite istu funkciju!
+                if para.text: text_to_remove.add(fix_legacy_text(para.text.strip()))
             for para in section.footer.paragraphs:
-                if para.text:
-                    text_to_remove.add(fix_legacy_encoding(para.text.strip()))
-
-    # KORAK 3: Uklanjanje boilerplate teksta
+                # I ovde takođe!
+                if para.text: text_to_remove.add(fix_legacy_text(para.text.strip()))
     for phrase_to_remove in text_to_remove:
         if phrase_to_remove:
             main_text = main_text.replace(phrase_to_remove, "")
-            
-    # KORAK 4: Finalno čišćenje (višestruki prazni redovi)
     main_text = re.sub(r'\n{2,}', '\n', main_text).strip()
     
-    # KORAK 5: Ekstrakcija metapodataka iz sada potpuno čistog teksta
+    # Ekstrakcija metapodataka iz sada potpuno čistog teksta
     metadata = extract_metadata_from_text(main_text)
     
     return main_text, metadata
 
-
-# Funkcije extract_metadata_from_text, process_docx_files i __main__ blok ostaju POTPUNO ISTI
-# Nema potrebe da ih menjate, ali ih ostavljam ovde radi kompletnosti
+# Funkcije extract_metadata_from_text i process_docx_files ostaju ISTE
 def extract_metadata_from_text(text: str) -> dict:
     metadata = {}
     patterns = {
