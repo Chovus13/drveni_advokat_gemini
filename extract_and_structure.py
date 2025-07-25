@@ -1,4 +1,4 @@
-# extract_and_structure.py (Finalna verzija sa pametnom popravkom)
+# extract_and_structure.py (Verzija 3.0 - Finalna sa kompletnom mapom)
 
 import os
 import re
@@ -18,87 +18,85 @@ logging.basicConfig(
 
 def fix_legacy_encoding(text: str) -> str:
     """
-    Popravlja tekst sa specifičnim "slomljenim" karakterima iz starih YU fontova.
+    Popravlja tekst sa specifičnim "slomljenim" karakterima iz starih YU/CP1250 fontova.
+    Ovo je finalna, proširena mapa.
     """
-    # Kompletna mapa za prevođenje, uključujući i velika i mala slova
-    # Ovu mapu možemo dopunjavati ako pronađemo još karaktera.
+    # Mapa za prevođenje karaktera
     correction_map = {
+        # Mala slova
         '^': 'č',
+        '|': 'đ',
         '[': 'š',
         ']': 'ž',
         '`': 'ć',
-        '|': 'đ',
-        '{': 'š', # Duplo mapiranje za š
-        '}': 'ž', # Duplo mapiranje za ž
+        # Neki fontovi su koristili i ove karaktere
+        '{': 'š',
+        '}': 'ž',
+        '@': 'ž',
         
-        # Pretpostavke za velika slova (ako postoje posebni karakteri)
-        # Ako su isti karakteri, .upper() metoda će odraditi posao.
-        # Npr. ako nađemo da je '@' veliko 'Č', dodali bismo '@': 'Č'
+        # Velika slova
+        '~': 'Č',
+        '\\': 'Đ',
+        '<': 'Š',
+        '>': 'Ž',
+        '=': 'Ć',
     }
 
-    # Prvo radimo osnovnu zamenu
+    # Prolazimo kroz mapu i vršimo zamenu
     for bad_char, good_char in correction_map.items():
         text = text.replace(bad_char, good_char)
-
-    # Sada, pokušajmo da rešimo problem velikih slova.
-    # Primer: Reč "BE^EJ" -> treba da postane "BEČEJ", a ne "BEčEJ"
-    # Ovo je kompleksan problem, ali možemo rešiti najčešće slučajeve.
-    # Prolazimo kroz reči i ako je cela reč velikim slovima (sa greškom), ispravljamo je.
-    words = text.split(' ')
-    fixed_words = []
-    for word in words:
-        # Proveravamo da li je reč cela napisana velikim slovima (ignorišući naše karaktere)
-        # Na primer, "OP[TINSKOM" je tehnički mešano, ali vizuelno je sve veliko.
-        # Za sada, jednostavnija zamena će morati da posluži.
-        # Naprednija logika bi zahtevala kompleksniju analizu.
         
-        # Najjednostavniji pristup koji će raditi u 90% slučajeva:
-        # Ako je reč cela velikim slovima, primeni .upper() na ispravljenu verziju.
-        # Ovo je teško izvesti pouzdano bez poznavanja svih karaktera.
-        # Zato ćemo se za sada držati osnovne zamene koja je najpouzdanija.
-        pass # Preskačemo naprednu logiku za sada
-
-    # Vraćamo tekst sa osnovnim popravkama.
     return text
 
-
-# Ostatak koda ostaje skoro isti, samo pozivamo novu funkciju
 def extract_and_clean_document(document: docx.Document) -> tuple[str, dict]:
-    main_text = "\n".join([para.text for para in document.paragraphs])
+    """
+    Prima ceo docx dokument objekat, popravlja enkodiranje, čisti ga i ekstrahuje metapodatke.
+    """
+    # Sastavljanje glavnog teksta iz paragrafa
+    main_text = "\n".join([para.text for para in document.paragraphs if para.text])
     
-    # << JEDINA IZMENA OVDE >>
-    # Pozivamo našu novu, pametnu funkciju za popravku!
+    # KORAK 1: "Lečenje" teksta pre bilo kakve dalje obrade!
     main_text = fix_legacy_encoding(main_text)
     
+    # KORAK 2: Prikupljanje teksta za uklanjanje (boilerplate)
     text_to_remove = set()
     for phrase in config.BOILERPLATE_PHRASES_TO_REMOVE:
         text_to_remove.add(phrase)
+
     if config.REMOVE_HEADERS_FOOTERS:
         for section in document.sections:
+            # Zaglavlja
             for para in section.header.paragraphs:
-                if para.text: text_to_remove.add(fix_legacy_encoding(para.text.strip()))
+                if para.text:
+                    # Prvo "izlečimo" tekst iz headera/footera pa ga onda dodamo za brisanje
+                    text_to_remove.add(fix_legacy_encoding(para.text.strip()))
+            # Podnožja
             for para in section.footer.paragraphs:
-                if para.text: text_to_remove.add(fix_legacy_encoding(para.text.strip()))
+                if para.text:
+                    text_to_remove.add(fix_legacy_encoding(para.text.strip()))
 
+    # KORAK 3: Uklanjanje boilerplate teksta
     for phrase_to_remove in text_to_remove:
         if phrase_to_remove:
             main_text = main_text.replace(phrase_to_remove, "")
             
+    # KORAK 4: Finalno čišćenje (višestruki prazni redovi)
     main_text = re.sub(r'\n{2,}', '\n', main_text).strip()
     
+    # KORAK 5: Ekstrakcija metapodataka iz sada potpuno čistog teksta
     metadata = extract_metadata_from_text(main_text)
+    
     return main_text, metadata
 
-# Funkcije extract_metadata_from_text i process_docx_files ostaju ISTE
+
+# Funkcije extract_metadata_from_text, process_docx_files i __main__ blok ostaju POTPUNO ISTI
+# Nema potrebe da ih menjate, ali ih ostavljam ovde radi kompletnosti
 def extract_metadata_from_text(text: str) -> dict:
     metadata = {}
     patterns = {
-        "case_id": r"Broj predmeta:?\s*([\w\d\s\/-]+)",
-        "judge": r"Sudija:?\s*([A-ZŠĐČĆŽ][a-zšđčćž]+(?:\s+[A-ZŠĐČĆŽ][a-zšđčćž]+)+)",
-        "plaintiff": r"Tužilac:?\s*(.*?)(?=\nTuženi:|Sudija:)",
-        "defendant": r"Tuženi:?\s*(.*?)(?=\nSud:|Datum presude:)",
-        "court": r"Sud:?\s*(.*?)(?=\n|$)",
-        "decision_date": r"Datum presude:?\s*(\d{1,2}\.\d{1,2}\.\d{4}\.?|\d{4}-\d{2}-\d{2})",
+        "case_id": r"Broj predmeta:?\s*([\w\d\s\/-]+)", "judge": r"Sudija:?\s*([A-ZŠĐČĆŽ][a-zšđčćž]+(?:\s+[A-ZŠĐČĆŽ][a-zšđčćž]+)+)",
+        "plaintiff": r"Tužilac:?\s*(.*?)(?=\nTuženi:|Sudija:)", "defendant": r"Tuženi:?\s*(.*?)(?=\nSud:|Datum presude:)",
+        "court": r"Sud:?\s*(.*?)(?=\n|$)", "decision_date": r"Datum presude:?\s*(\d{1,2}\.\d{1,2}\.\d{4}\.?|\d{4}-\d{2}-\d{2})",
         "document_type": r"\b(PRESUDA|REŠENJE)\b" 
     }
     for key, pattern in patterns.items():
@@ -118,7 +116,6 @@ def process_docx_files(source_dir: str, output_path: str):
     if not all_files:
         print("Nema .docx fajlova u navedenom direktorijumu.")
         return
-
     with open(output_path, 'w', encoding='utf-8') as outfile:
         for file_path in tqdm(all_files, desc="Procesiranje dokumenata"):
             try:
