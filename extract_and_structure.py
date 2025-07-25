@@ -7,6 +7,8 @@ import argparse
 import docx
 from tqdm import tqdm
 import logging
+import config  # << NOVO: Uvozimo naš konfiguracioni fajl
+
 
 # Podešavanje za logovanje grešaka
 logging.basicConfig(
@@ -14,6 +16,52 @@ logging.basicConfig(
     level=logging.WARNING,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+
+def extract_and_clean_document(document: docx.Document) -> tuple[str, dict]:
+    """
+    NOVA I POBOLJŠANA FUNKCIJA
+    Prima ceo docx dokument objekat i iz njega izdvaja:
+    1. Očišćen tekst (bez zaglavlja, podnožja i boilerplate fraza).
+    2. Ekstrahovane metapodatke.
+    """
+    
+    # --- DEO ZA ČIŠĆENJE TEKSTA ---
+    
+    # Prvo, prikupljamo sav tekst koji treba ukloniti
+    text_to_remove = set() # Koristimo 'set' da izbegnemo duplikate
+    
+    # 1. Uklanjanje na osnovu konfiguracione liste
+    for phrase in config.BOILERPLATE_PHRASES_TO_REMOVE:
+        text_to_remove.add(phrase)
+
+    # 2. Direktno čitanje i uklanjanje teksta iz header-a i footer-a
+    if config.REMOVE_HEADERS_FOOTERS:
+        for section in document.sections:
+            # Zaglavlja
+            for para in section.header.paragraphs:
+                if para.text:
+                    text_to_remove.add(para.text.strip())
+            # Podnožja
+            for para in section.footer.paragraphs:
+                if para.text:
+                    text_to_remove.add(para.text.strip())
+
+    # Sastavljanje glavnog teksta iz paragrafa
+    main_text = "\n".join([para.text for para in document.paragraphs])
+    
+    # Uklanjanje prikupljenih fraza iz glavnog teksta
+    for phrase_to_remove in text_to_remove:
+        if phrase_to_remove: # Ne uklanjamo prazne stringove
+            main_text = main_text.replace(phrase_to_remove, "")
+            
+    # Uklanjanje višestrukih praznih redova nakon čišćenja
+    main_text = re.sub(r'\n{2,}', '\n', main_text).strip()
+    
+    # --- DEO ZA EKSTRAKCIJU METAPODATAKA (ostaje skoro isti) ---
+    metadata = extract_metadata_from_text(main_text)
+    
+    return main_text, metadata
+
 
 def extract_metadata_from_text(text: str) -> dict:
     """
@@ -64,6 +112,8 @@ def clean_full_text(text: str) -> str:
 def process_docx_files(source_dir: str, output_path: str):
     """
     Glavna funkcija koja obrađuje sve .docx fajlove u direktorijumu.
+    
+    Glavna funkcija - sada poziva novu, pametniju funkciju za obradu.
     """
     print(f"Započinjanje ekstrakcije iz direktorijuma: {source_dir}")
     
@@ -81,19 +131,17 @@ def process_docx_files(source_dir: str, output_path: str):
 
     # Otvaranje izlaznog .jsonl fajla sa UTF-8 kodiranjem
     with open(output_path, 'w', encoding='utf-8') as outfile:
-        # tqdm kreira vizuelni status bar u konzoli
-        for file_path in tqdm(docx_files, desc="Procesiranje dokumenata"):
+        # Malo ispravljena logika za pronalaženje fajlova unutar tqdm
+        all_files = [os.path.join(root, file) for root, _, files in os.walk(source_dir) for file in files if file.lower().endswith('.docx')]
+        for file_path in tqdm(all_files, desc="Procesiranje dokumenata"):
             try:
                 document = docx.Document(file_path)
-                full_text = "\n".join([para.text for para in document.paragraphs])
                 
-                # Ekstrakcija metapodataka
-                metadata = extract_metadata_from_text(full_text)
+                # << JEDINA KLJUČNA IZMENA U OVOJ FUNKCIJI >>
+                # Pozivamo novu funkciju koja radi i čišćenje i ekstrakciju
+                cleaned_text, metadata = extract_and_clean_document(document)
                 
-                # Čišćenje teksta
-                cleaned_text = clean_full_text(full_text)
-
-                # Kreiranje finalnog JSON objekta po "jednostavnoj" šemi
+                # Kreiranje finalnog JSON objekta (logika ostaje ista)
                 structured_data = {
                     "source_file": file_path,
                     "case_id": metadata.get("case_id", "Nepoznato"),
@@ -108,13 +156,12 @@ def process_docx_files(source_dir: str, output_path: str):
                     }
                 }
                 
-                # Upisivanje JSON objekta u fajl, ensure_ascii=False čuva srpske karaktere
                 json.dump(structured_data, outfile, ensure_ascii=False)
                 outfile.write('\n')
 
             except Exception as e:
                 error_message = f"Greška pri obradi fajla {file_path}: {e}"
-                print(error_message)
+                # print(error_message) # Možemo isključiti ispis u konzoli da ne bude pretrpano
                 logging.warning(error_message)
 
     print(f"\nEkstrakcija završena. Podaci sačuvani u: {output_path}")
