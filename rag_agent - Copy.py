@@ -8,7 +8,8 @@ from langchain_qdrant import Qdrant
 # from langchain_huggingface import HuggingFaceEmbeddings
 # IZMENA: Uvozimo HuggingFaceEmbeddings iz novog paketa
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
+from langchain_ollama import OllamaEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser

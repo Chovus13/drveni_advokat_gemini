@@ -13,11 +13,9 @@ FEEDBACK_LOG_PATH = r"data/feedback_log.jsonl"
 # --- Konfiguracija Modela i Uređaja ---
 # Podrazumevane vrednosti koje će biti ponuđene u aplikaciji
 DEFAULT_LLM_MODEL = "mistral:7b"  # Promenite na "YugoGPT" ako želite koristiti taj model
+AVAILABLE_LLMS = ["YugoGPT", "mistral:7b"]
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
-DEFAULT_DEVICE = "cuda" #####ili cuda za NVIDIA GPU
-OLLAMA_HOST = "http://localhost:11434" # Eksplicitno definisanje Ollama hosta
-LAST_USED_MODEL_FILE = "last_used_model.txt"
-
+DEFAULT_DEVICE = "cuda"
 
 # Parametri za Indeksiranje (moraju odgovarati embedding modelu)
 VECTOR_DIMENSION = 768 # Za paraphrase-multilingual-mpnet-base-v2
@@ -28,15 +26,8 @@ BATCH_SIZE = 32
 QDRANT_URL = "http://localhost:6333"
 QDRANT_COLLECTION_NAME = "drveni_advokat"
 
-FEEDBACK_LOG_PATH = r"data/feedback_log.jsonl" ############################################ ovo ne koristimo
-FINETUNE_DATASET_PATH = r"data/finetuning_dataset.jsonl" ############################################ ovo ne koristimo
-LORA_ADAPTER_PATH = r"models/drveni_advokat_lora_v1" ############################################ ovo ne koristimo
 # --- Čišćenje teksta (Text Cleaning) ---
-# Da li da se automatski ukloni tekst iz zaglavlja (header) i podnožja (footer)?
 REMOVE_HEADERS_FOOTERS = True
-
-# Lista specifičnih fraza koje treba ukloniti iz teksta.
-# Svaka fraza će biti uklonjena ako se pronađe u tekstu.
 BOILERPLATE_PHRASES_TO_REMOVE = [
     "Telefon/faks:   +381 21 816 772",
     "E-mail address:   nikkosan@EUnet.yu",
@@ -92,4 +83,3 @@ BOILERPLATE_PHRASES_TO_REMOVE = [
 # # --- Qdrant Konfiguracija ---
 # QDRANT_URL = "http://localhost:6333"
 # QDRANT_COLLECTION_NAME = "drveni_advokat"
-

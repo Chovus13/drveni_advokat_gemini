@@ -1,3 +1,0 @@
-[ERROR] Gre�ka pri inicijalizaciji agenta: 'charmap' codec can't encode character '\u0111' in position 129: character maps to <undefined>
-[INFO] Agent uspešno inicijalizovan sa modelom mistral:7b na cuda
-[ERROR] Greška pri snimanju istorije razgovora: Object of type set is not JSON serializable

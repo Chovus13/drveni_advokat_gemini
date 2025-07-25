@@ -12,39 +12,19 @@ import config
 
 # --- Pomoćne Funkcije ---
 
-def get_last_used_model():
-    """Pročitaj poslednji korišćeni model iz fajla"""
-    try:
-        if os.path.exists(config.LAST_USED_MODEL_FILE):
-            with open(config.LAST_USED_MODEL_FILE, "r", encoding="utf-8") as f:
-                return f.read().strip()
-    except Exception as e:
-        st.error(f"Greška pri čitanju poslednjeg modela: {e}")
-    return config.DEFAULT_LLM_MODEL
-
-def save_last_used_model(model_name: str):
-    """Sačuvaj poslednji korišćeni model u fajl"""
-    try:
-        with open(config.LAST_USED_MODEL_FILE, "w", encoding="utf-8") as f:
-            f.write(model_name)
-    except Exception as e:
-        st.error(f"Greška pri snimanju poslednjeg modela: {e}")
-
 def get_ollama_models():
     """Pribavlja listu preuzetih modela iz Ollama na robustan način."""
     try:
-        client = ollama.Client(host=config.OLLAMA_HOST)
-        models_data = client.list().get('models', [])
-        # Filtriramo samo modele koji imaju 'name' ključ
+        models_data = ollama.list().get('models', [])
+        print(f"DEBUG: Raw Ollama models data: {models_data}")  # Debug output
+        # Filtriramo samo modele koji imaju 'name' ključ da bismo izbegli greške
         models = [model['name'] for model in models_data if 'name' in model]
-        
-        # Ako nema modela, vrati podrazumevani
-        if not models:
-            return [config.DEFAULT_LLM_MODEL]
+        print(f"DEBUG: Extracted model names: {models}")  # Debug output
         return models
     except Exception as e:
+        print(f"DEBUG: Error getting Ollama models: {e}")  # Debug output
         st.error(f"Nije moguće povezati se sa Ollama: {e}")
-        return [config.DEFAULT_LLM_MODEL]
+        return []
 
 def format_context(docs):
     """Formira tekstualni prikaz konteksta za prikaz u expanderu."""
@@ -65,19 +45,7 @@ st.set_page_config(page_title="Drveni Advokat", layout="wide")
 if 'agent' not in st.session_state:
     st.session_state.agent = None
 if "messages" not in st.session_state:
-    import json
-    import os
-    chat_history_file = "chat_history.json"
-    if os.path.exists(chat_history_file):
-        try:
-            with open(chat_history_file, "r", encoding="utf-8") as f:
-                st.session_state.messages = json.load(f)
-        except Exception as e:
-            st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Došlo je do greške pri učitavanju istorije razgovora. Počinjemo novi razgovor."}]
-            with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                log_file.write(f"[ERROR] Greška pri učitavanju istorije razgovora: {e}\n")
-    else:
-        st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Molim vas odaberite podešavanja u meniju sa leve strane i kliknite na 'Inicijalizuj Agenta'."}]
+    st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Molim vas odaberite podešavanja u meniju sa leve strane i kliknite na 'Inicijalizuj Agenta'."}]
 if "selected_llm" not in st.session_state:
     st.session_state.selected_llm = config.DEFAULT_LLM_MODEL
 if "selected_device" not in st.session_state:
@@ -92,20 +60,21 @@ with st.sidebar:
     
     # Dinamički izbor LLM modela
     available_models = get_ollama_models()
-    last_used_model = get_last_used_model()
-    
-    # Proveri da li je poslednji korišćeni model i dalje dostupan
-    if last_used_model not in available_models:
-        last_used_model = available_models[0] if available_models else config.DEFAULT_LLM_MODEL
-    
-    selected_llm = st.selectbox(
-        "Izaberite LLM Model:",
-        available_models,
-        index=available_models.index(last_used_model) if last_used_model in available_models else 0
-    )
-    st.session_state.selected_llm = selected_llm
-    else:        
-    st.warning("Nema dostupnih Ollama modela. Proverite da li je Ollama pokrenuta.")
+    if available_models:
+        # Pokušavamo da nađemo podrazumevani model u listi, ako ne postoji, uzimamo prvi
+        try:
+            default_index = available_models.index(st.session_state.selected_llm)
+        except ValueError:
+            default_index = 0
+        
+        selected_llm = st.selectbox(
+            "Izaberite LLM Model:",
+            available_models,
+            index=default_index
+        )
+        st.session_state.selected_llm = selected_llm
+    else:
+        st.warning("Nema dostupnih Ollama modela. Proverite da li je Ollama pokrenuta.")
 
     # Izbor uređaja
     selected_device = st.selectbox(
@@ -117,7 +86,7 @@ with st.sidebar:
 
     # Dugme za inicijalizaciju/re-inicijalizaciju agenta
     if st.button("Inicijalizuj Agenta", type="primary"):
-        with st.spinner(f"Inicijalizacija sa modelom '{st.session_state.selected_llm}'..."):
+        with st.spinner(f"Inicijalizacija sa modelom '{st.session_state.selected_llm}' na '{st.session_state.selected_device.upper()}'..."):
             try:
                 st.session_state.agent = RAGAgent(
                     llm_model=st.session_state.selected_llm,
@@ -125,37 +94,11 @@ with st.sidebar:
                     device=st.session_state.selected_device
                 )
                 st.success("Agent je uspešno inicijalizovan!", icon="✅")
-                save_last_used_model(st.session_state.selected_llm)  # Sačuvaj izabrani model
-                with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                    log_file.write(f"[INFO] Agent uspešno inicijalizovan sa modelom {st.session_state.selected_llm} na {st.session_state.selected_device}\n")
                 # Resetujemo chat pri promeni agenta
                 st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman. Kako vam mogu pomoći?"}]
                 st.rerun() # Ponovo pokrećemo skriptu da se osveži interfejs
             except Exception as e:
                 st.error(f"Greška pri inicijalizaciji: {e}", icon="🔥")
-                with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                    log_file.write(f"[ERROR] Greška pri inicijalizaciji agenta: {e}\n")
-
-    # Auto-start agenta ako nije inicijalizovan
-    if st.session_state.agent is None and available_models:
-        with st.spinner(f"Automatska inicijalizacija sa modelom '{last_used_model}'..."):
-            try:
-                st.session_state.agent = RAGAgent(
-                    llm_model=last_used_model,
-                    embedding_model=config.DEFAULT_EMBEDDING_MODEL,
-                    device=st.session_state.selected_device
-                )
-                st.session_state.selected_llm = last_used_model
-                st.success("Agent je automatski inicijalizovan!", icon="✅")
-                with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                    log_file.write(f"[INFO] Agent automatski inicijalizovan sa modelom {st.session_state.selected_llm} na {st.session_state.selected_device}\n")
-                st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman. Kako vam mogu pomoći?"}]
-                st.rerun()
-            except Exception as e:
-                st.error(f"Greška pri automatskoj inicijalizaciji: {e}", icon="🔥")
-                with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                    log_file.write(f"[ERROR] Greška pri automatskoj inicijalizaciji agenta: {e}\n")
-                st.session_state.agent = None
 
     st.markdown("---")
     st.subheader("Status Sistema")
@@ -214,16 +157,6 @@ if prompt := st.chat_input("Postavite vaše pitanje..."):
                         "content": full_response,
                         "context": source_docs
                     })
-                    # Snimamo istoriju razgovora u lokalni fajl
-                    import json
-                    try:
-                        with open("chat_history.json", "w", encoding="utf-8") as f:
-                            json.dump(st.session_state.messages, f, ensure_ascii=False, indent=2)
-                        with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                            log_file.write(f"[INFO] Istorija razgovora snimljena u chat_history.json\n")
-                    except Exception as e:
-                        with open("app_log.txt", "a", encoding="utf-8") as log_file:
-                            log_file.write(f"[ERROR] Greška pri snimanju istorije razgovora: {e}\n")
 
                 except Exception as e:
                     st.error(f"Došlo je do greške: {e}", icon="🔥")
@@ -233,84 +166,3 @@ while True:
     cpu_usage.metric(label="CPU Zauzeće", value=f"{psutil.cpu_percent()}%")
     ram_usage.metric(label="RAM Zauzeće", value=f"{psutil.virtual_memory().percent}%")
     time.sleep(1) # Osvežava se svake sekunde
-
-
-
-# # app.py (Verzija 2.1 - Kontrolni Panel)
-
-# import streamlit as st
-# from rag_agent import RAGAgent
-# import config
-
-# # --- Podešavanje stranice ---
-# st.set_page_config(page_title="Drveni Advokat", layout="wide")
-
-# # --- Sidebar sa Konfiguracijom ---
-# with st.sidebar:
-#     st.header("👨‍⚖️ Drveni Advokat")
-#     st.markdown("---")
-#     st.subheader("Status Sistema")
-#     # Prikaz aktivnih modela iz config.py
-#     st.info(f"**Aktivni LLM:**\n`{config.BASE_LLM_MODEL}`")
-#     st.info(f"**Aktivni Embedding Model:**\n`{config.EMBEDDING_MODEL_NAME}`")
-#     st.info(f"**Uređaj za embedding:** `{config.DEVICE.upper()}`")
-#     st.markdown("---")
-#     # TODO: Dodati prikaz CPU/RAM zauzeća sa psutil
-
-# # --- Glavni Interfejs ---
-# st.title("Drveni Advokat - RAG Sistem")
-# st.markdown("Postavite pitanje vezano za pravne dokumente koji su indeksirani u bazi.")
-
-# # --- Inicijalizacija Agenta ---
-# if 'agent' not in st.session_state:
-#     with st.spinner("Inicijalizacija AI Agenta... Ovo može potrajati."):
-#         try:
-#             st.session_state.agent = RAGAgent()
-#             st.success("Agent je spreman!", icon="✅")
-#         except Exception as e:
-#             st.error(f"Greška pri inicijalizaciji agenta: {e}", icon="🔥")
-#             st.warning("Proverite da li su Qdrant i Ollama pokrenuti.")
-#             st.stop()
-
-# # --- Upravljanje Istorijom Razgovora ---
-# if "messages" not in st.session_state:
-#     st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Spreman sam za analizu vaših pravnih predmeta."}]
-
-# # Prikaz istorije
-# for message in st.session_state.messages:
-#     with st.chat_message(message["role"]):
-#         st.markdown(message["content"])
-#         # Prikaz konteksta ako postoji
-#         if "context" in message:
-#             with st.expander("Prikaži Kontekst Korišćen za Odgovor"):
-#                 st.info(message["context"])
-
-# # --- Polje za Unos ---
-# if prompt := st.chat_input("Postavite vaše pitanje..."):
-#     st.session_state.messages.append({"role": "user", "content": prompt})
-#     with st.chat_message("user"):
-#         st.markdown(prompt)
-
-#     with st.chat_message("assistant"):
-#         with st.spinner("Analiziram dokumente i sastavljam odgovor..."):
-#             try:
-#                 # Modifikujemo RAG agenta da vraća i odgovor i kontekst
-#                 # (Ovo zahteva malu izmenu u rag_agent.py)
-#                 response = st.session_state.agent.ask(prompt)
-                
-#                 # Privremeno rešenje dok ne izmenimo rag_agent.py:
-#                 # Kontekst ćemo izvući ponovnim pozivom retrievera
-#                 retrieved_docs = st.session_state.agent.retriever.invoke(prompt)
-#                 context_text = "\n\n---\n\n".join([doc.page_content for doc in retrieved_docs])
-                
-#                 st.markdown(response)
-                
-#                 # Čuvamo odgovor i kontekst u istoriji
-#                 st.session_state.messages.append({
-#                     "role": "assistant",
-#                     "content": response,
-#                     "context": context_text # Čuvamo kontekst
-#                 })
-                
-#             except Exception as e:
-#                 st.error(f"Došlo je do greške: {e}", icon="🔥")
