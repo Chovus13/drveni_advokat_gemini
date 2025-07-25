@@ -31,8 +31,8 @@ class RAGAgent:
         print("Inicijalizacija RAG Agenta...")
         
         self.embedding_model = HuggingFaceEmbeddings(
-            model_name=config.EMBEDDING_MODEL,
-            model_kwargs={'device': 'cpu'}
+            model_name=config.EMBEDDING_MODEL_NAME,
+            model_kwargs={'device': config.DEVICE}
         )
         
         qdrant_client = QdrantClient(url=config.QDRANT_URL)

@@ -1,17 +1,38 @@
-# config.py
+# config.py (Verzija 2.0)
 
 # --- Putanje do foldera ---
+# Koristimo 'r' ispred stringa da izbegnemo probleme sa '\' na Windowsu
 SOURCE_DOC_DIR = r"I:\drveni_advokat_gemini\docs"
 CONVERTED_DOCX_DIR = r"I:\drveni_advokat_gemini\converted_docs"
-STRUCTURED_JSONL_PATH = "data/structured_corpus.jsonl"
-FEEDBACK_LOG_PATH = "data/feedback_log.jsonl"
-# ... ostale putanje ...
+STRUCTURED_JSONL_PATH = r"data/structured_corpus.jsonl"
+FEEDBACK_LOG_PATH = r"data/feedback_log.jsonl"
+FINETUNE_DATASET_PATH = r"data/finetuning_dataset.jsonl" ############################################ ovo ne koristimo
+LORA_ADAPTER_PATH = r"models/drveni_advokat_lora_v1" ############################################ ovo ne koristimo
 
-# --- Parametri modela ---
-BASE_LLM_MODEL = "mistral:7b"
-# EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-# NOVA, POBOLJŠANA LINIJA:
-EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+# --- Konfiguracija Modela i Uređaja ---
+# Uređaj za izvršavanje embedding modela ('cpu' ili 'cuda' za NVIDIA GPU)
+DEVICE = "cuda" # Promenite u "cuda" ako koristite GTX 1080
+
+# Lista dostupnih LLM modela (koje ste preuzeli u Ollama)
+# AVAILABLE_LLMS = ["YugoGPT", "mistral:7b"]
+# Model koji se trenutno koristi
+BASE_LLM_MODEL = "mistral:7b"  # Promenite na "YugoGPT" ako želite koristiti taj model
+
+# Lista dostupnih embedding modela
+# AVAILABLE_EMBEDDING_MODELS = [
+#     "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+#     "sentence-transformers/all-MiniLM-L6-v2"
+# ]
+# Model koji se trenutno koristi
+EMBEDDING_MODEL_NAME = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+# EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+# --- Parametri za Indeksiranje ---
+# Dimenzija vektora mora odgovarati odabranom embedding modelu!
+# paraphrase-multilingual-mpnet-base-v2 -> 768
+# all-MiniLM-L6-v2 -> 384
+VECTOR_DIMENSION = 768
+DISTANCE_METRIC = "Cosine" # Qdrant prihvata string "Cosine", "Euclid", ili "Dot"
+BATCH_SIZE = 32
 
 # --- Qdrant Konfiguracija ---
 QDRANT_URL = "http://localhost:6333"

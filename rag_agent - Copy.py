@@ -30,7 +30,7 @@ class RAGAgent:
         # )
                 # IZMENA: Koristimo HuggingFaceEmbeddings iz novog paketa
         self.embedding_model = HuggingFaceEmbeddings(
-            model_name=config.EMBEDDING_MODEL,
+            model_name=config.EMBEDDING_MODEL_NAME,
             model_kwargs={'device': 'cpu'}
         )
         

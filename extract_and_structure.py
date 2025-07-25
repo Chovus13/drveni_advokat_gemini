@@ -2,6 +2,7 @@
 
 import os
 import re
+import ftfy # << NOVO: Uvozimo čarobni štapić
 import json
 import argparse
 import docx
@@ -48,6 +49,8 @@ def extract_and_clean_document(document: docx.Document) -> tuple[str, dict]:
 
     # Sastavljanje glavnog teksta iz paragrafa
     main_text = "\n".join([para.text for para in document.paragraphs])
+    # << NOVO: "Lečenje" teksta pre bilo kakve dalje obrade! >>
+    main_text = ftfy.fix_text(main_text)
     
     # Uklanjanje prikupljenih fraza iz glavnog teksta
     for phrase_to_remove in text_to_remove:
