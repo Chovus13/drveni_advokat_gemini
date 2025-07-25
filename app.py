@@ -14,7 +14,8 @@ import config
 def get_ollama_models():
     """Pribavlja listu preuzetih modela iz Ollama na robustan način."""
     try:
-        models_data = ollama.list().get('models', [])
+        client = ollama.Client(host=config.OLLAMA_HOST)
+        models_data = client.list().get('models', [])
         # Filtriramo samo modele koji imaju 'name' ključ da bismo izbegli greške
         return [model['name'] for model in models_data if 'name' in model]
     except Exception as e:

@@ -37,7 +37,8 @@ class RAGAgent:
         
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 5})
         
-        self.llm = OllamaLLM(model=llm_model)
+        self.llm = OllamaLLM(model=config.DEFAULT_LLM_MODEL, host=config.OLLAMA_HOST)
+#         self.llm = OllamaLLM(model=config.BASE_LLM_MODEL)
         
         template = """
 Vi ste 'Drveni advokat', AI asistent specijalizovan za pravna pitanja u Srbiji. 

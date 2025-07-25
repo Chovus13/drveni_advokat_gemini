@@ -15,6 +15,8 @@ FEEDBACK_LOG_PATH = r"data/feedback_log.jsonl"
 DEFAULT_LLM_MODEL = "mistral:7b"  # Promenite na "YugoGPT" ako želite koristiti taj model
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
 DEFAULT_DEVICE = "cuda" #####ili cuda za NVIDIA GPU
+OLLAMA_HOST = "http://localhost:11434" # Eksplicitno definisanje Ollama hosta
+
 
 # Parametri za Indeksiranje (moraju odgovarati embedding modelu)
 VECTOR_DIMENSION = 768 # Za paraphrase-multilingual-mpnet-base-v2
