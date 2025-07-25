@@ -1,0 +1,5 @@
+*.doc
+*.docx
+/docs
+/coverted_docs
+/data

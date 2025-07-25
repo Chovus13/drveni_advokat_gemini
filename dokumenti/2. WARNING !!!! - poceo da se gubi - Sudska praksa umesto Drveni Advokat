@@ -1,0 +1,67 @@
+Glavni Sistemski Prompt: RAG Sistem za Analizu Sudske Prakse
+CILJ PROMPTA: Ovaj dokument služi kao kompletna tehnička specifikacija i logički plan za razvoj sistema za pretragu i analizu dokumenata iz sudske prakse. Namenjen je AI asistentu da se u bilo kom trenutku može podsetiti arhitekture, odabranih tehnologija i logičkog toka projekta.
+
+1. VISOKI CILJ PROJEKTA (THE "WHAT")
+
+Kreiranje RAG (Retrieval-Augmented Generation) sistema koji omogućava postavljanje pitanja na prirodnom jeziku o bazi podataka sudskih odluka i dobijanje preciznih, kontekstualno relevantnih odgovora, zajedno sa referencama na konkretne slučajeve (case_id) iz kojih je informacija preuzeta.
+
+2. KORISNIČKI SCENARIO (THE "WHY")
+
+Krajnji korisnik (npr. advokat, student prava) unosi upit, na primer: "U kojim slučajevima je sud u Novom Sadu presudio u korist radnika kod povrede na radu?". Sistem pronalazi relevantne presude, analizira njihov sadržaj i generiše sažet odgovor, navodeći izvore: "U slučaju NS-123/2022, sudija Petar Petrović je presudio u korist radnika jer... U slučaju NS-456/2021..."
+
+3. ARHITEKTURA I ODABRANE TEHNOLOGIJE (THE "HOW")
+
+Ovo je spisak svih ključnih komponenti i njihova uloga u sistemu:
+
+Izvor Podataka (Data Source):
+
+Format: CSV ili JSON fajlovi.
+
+Struktura: Svaki red/objekat sadrži polja kao što su: case_id (jedinstveni identifikator), judge (sudija), decision_date (datum odluke), court (sud), i najvažnije, full_text (kompletan tekst presude).
+
+Model Jezika (LLM - Large Language Model):
+
+Tehnologija: langchain_community.llms.Ollama
+
+Uloga: Ovo je "mozak" operacije koji se izvršava lokalno. On ne pretražuje, već razume tekst koji mu se servira i na osnovu njega generiše odgovor.
+
+Primer Modela: Llama3, Mistral ili sličan model dostupan preko Ollama.
+
+Vektorska Baza Podataka (Vector Database):
+
+Tehnologija: qdrant-client
+
+Uloga: Skladišti tekstualne podatke u formi numeričkih vektora (embedinga). Omogućava ultra-brzu pretragu semantičke sličnosti – pronalaženje delova teksta koji su po značenju najsličniji korisnikovom pitanju.
+
+Model za Embedovanje (Embedding Model):
+
+Tehnologija: sentence-transformers/all-MiniLM-L6-v2
+
+Uloga: "Prevodilac" koji pretvara delove teksta presuda i korisnikovo pitanje u numeričke vektore koje Qdrant može da razume i poredi. Ovo je ključ za razumevanje značenja, a ne samo ključnih reči.
+
+Strategija za Deljenje Teksta (Text Splitting):
+
+Tehnologija: RecursiveCharacterTextSplitter iz LangChain-a.
+
+Uloga: Pošto su pravni dokumenti veoma dugački, moramo ih pametno iseći na manje, preklapajuće delove ("chunks"). Ovaj spliter to radi tako što pokušava da sačuva semantički integritet rečenica i pasusa.
+
+Orkestracija (Orchestration Framework):
+
+Tehnologija: LangChain
+
+Uloga: "Lepak" koji povezuje sve gorenavedene komponente u jedinstven, funkcionalan lanac (Chain). LangChain upravlja celim procesom: od učitavanja dokumenta, preko deljenja, embedovanja, skladištenja, pa do finalnog procesa pretrage i generisanja odgovora.
+
+4. LOGIČKI TOK PROCESA (WORKFLOW)
+
+Faza Indeksiranja (Jednokratni proces):
+a. Učitavanje: LangChain učitava sve presude iz izvornih fajlova.
+b. Deljenje: RecursiveCharacterTextSplitter deli tekst svake presude na manje delove (chunks). Svaki "chunk" zadržava metapodatke svog porekla (case_id, court, itd.).
+c. Embedovanje: Model all-MiniLM-L6-v2 pretvara svaki "chunk" u vektor.
+d. Skladištenje: Svi vektori i njihovi odgovarajući tekstualni "chunkovi" se skladište u Qdrant bazu.
+
+Faza Upita (Dešava se svaki put kada korisnik postavi pitanje):
+a. Prijem Upita: Korisnik unosi pitanje.
+b. Embedovanje Upita: Isti all-MiniLM-L6-v2 model pretvara korisnikovo pitanje u vektor.
+c. Pretraga (Retrieval): LangChain šalje vektor upita u Qdrant. Qdrant vraća N najsličnijih "chunkova" teksta iz baze (npr. 5 najrelevantnijih delova presuda).
+d. Generisanje (Generation): LangChain uzima originalno pitanje i pronađene "chunkove" i šalje ih Ollama LLM-u sa instrukcijom: "Odgovori na sledeće pitanje SAMO na osnovu priloženog konteksta. Navedi case_id za svaki deo informacije koju koristiš."
+e. Prikaz Odgovora: Sistem prikazuje finalni, generisani odgovor korisniku.

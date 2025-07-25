@@ -1,0 +1,74 @@
+1. Prošireni Metadata Model (Bogatije za pretragu)
+json
+{
+  "source_file": "putanja/do/originalnog.doc",
+  "case_id": "P-123-2005",
+  "full_text": "Kompletan očišćen tekst dokumenta...",
+  "metadata": {
+    // **Osnovni podaci (ručno/automatski ekstrahovani)**
+    "judge": "Marko Marković",
+    "plaintiff": "Petar Petrović",
+    "defendant": "Jovan Jovanović",
+    "decision_date": "2006-11-15",
+    "court": {
+      "name": "Osnovni sud u Beogradu",
+      "type": "Osnovni sud",
+      "municipality": "Savski venac"
+    },
+    "document_type": "Presuda",
+    
+    // **Dodatni NER (Named Entity Recognition) za pravne entitete**
+    "legal_entities": {
+      "laws": ["Zakon o obligacionim odnosima", "Član 345"],
+      "legal_topics": ["Naknada štete", "Raskid ugovora"],
+      "lawyers": ["Ana Anić", "Nikola Nikolić"]
+    },
+    
+    // **Temporalna analiza (za promene u pravu)**
+    "cited_cases": ["P-456-2003", "P-789-2001"],
+    "overruled_by": "P-999-2010",  // Ako je presuda kasnije poništena
+    "valid_until": "2010-05-20",   // Ako je važenje ograničeno
+    
+    // **Dodatni filteri za pretragu**
+    "tags": ["građanski spor", "neisplata dugovanja", "prekršajni postupak"]
+  }
+}
+2. Šta možeš da uradiš sa ovim?
+🔍 Napredna pretraga (Hybrid Search)
+"Presude sudije Marka Markovića u vezi sa neisplatom dugovanja u periodu 2005-2010"
+→ Filtrira po:
+
+metadata.judge + metadata.tags + metadata.decision_date
+
+semantička pretraga teksta.
+
+📊 "Similar Cases" (Košarka za pravne slučajeve!)
+Kad korisnik otvori dokument, možeš da mu ponudiš:
+
+"Srodne presude" (istu temu, slične parnice)
+
+"Kasnije presude koje citiraju ovaj slučaj" (pravo pravnih promena)
+
+"Presude istog sudije" (da vidiš njegov stil donošenja odluka).
+
+⚖️ Temporalna analiza (kako se jurisprudencija menja)
+"Pokaži mi kako se tumačenje Člana 345 ZOO promenilo u poslednjih 10 godina"
+→ Grupiši presude po godinama i analiziraj promene u obrazloženju.
+
+3. Tehnički detalji za implementaciju
+Za NER (Named Entity Recognition):
+
+Koristi srpski BERTić + custom fine-tuning za pravne entitete.
+
+Možeš da napraviš lookup listu (npr. spisak sudija iz sudskog registra).
+
+Za "similar cases":
+
+Kombinuj vektorsku sličnost (embedding teksta) + filtere po metapodacima.
+
+Qdrant podržava "hybrid scoring" (vektor + keyword boost).
+
+Za temporalne upite:
+
+Dodaj "date histogram" agregacije u pretragu.
+

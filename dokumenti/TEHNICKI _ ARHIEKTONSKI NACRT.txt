@@ -1,0 +1,289 @@
+Tehnički Arhitektonski Nacrt: Lokalni Pravni AI Agent 'Drveni Advokat'
+
+
+I. Temeljna Arhitektura: Nacrt za 'Drvenog Advokata'
+
+Ovaj dokument predstavlja sveobuhvatni tehnički nacrt za razvoj lokalnog, privatnog AI pravnog agenta pod nazivom 'Drveni advokat'. Cilj projekta je stvoriti trajno nasleđe transformacijom obimnog ličnog arhiva pravnih predmeta u inteligentni sistem sposoban za rezonovanje i učenje. Arhitektura je osmišljena da funkcioniše u potpunosti lokalno, bez zavisnosti od eksternih cloud servisa, čime se garantuje apsolutna privatnost i kontrola nad podacima.
+
+1.1. Pregled Sistema i Osnovna Filozofija
+
+Osnovna filozofija projekta 'Drveni advokat' nije stvaranje još jednog čet-bota za pitanja i odgovore, već implementacija sofisticiranog "čovek-u-petlji" (man-in-the-loop) sistema. U ovom modelu, ekspertiza penzionisanog advokata nije samo početni izvor podataka, već kontinuirani, aktivni signal za obuku. 'Drveni advokat' je koncipiran ne kao statički repozitorijum znanja, već kao digitalni pripravnik dizajniran da uči direktno od svog mentora. Sistem je strukturiran oko četiri fundamentalna, međusobno povezana modula koji zajedno čine ciklus učenja i usavršavanja.
+Cevovod za Unos Podataka (Data Ingestion Pipeline): Industrijski robustan proces zadužen za konverziju, parsiranje i strukturiranje korpusa od 200 GB pravnih predmeta iz zastarelog .doc formata. Ovaj modul je temelj na kojem se gradi celokupno znanje sistema.
+Jezgro za Rezonovanje zasnovano na RAG-u (RAG Reasoning Core): Primarni mehanizam za odgovaranje na upite, izgrađen korišćenjem LangChain okvira, lokalnog velikog jezičkog modela (LLM) i vektorske baze podataka. Ovaj modul pruža agentu sposobnost da koristi stečeno znanje.
+Interaktivni Interfejs za Korekciju (Interactive Correction Interface): Korisnički interfejs zasnovan na Streamlit-u, putem kojeg mentor (advokat) interaguje sa agentom, ocenjuje njegove odgovore i pruža precizne korekcije. Ovo je ključni mehanizam za prikupljanje i digitalizaciju ekspertize.
+Petlja za Fino Podešavanje (PEFT/LoRA Fine-Tuning Loop): Automatizovani pozadinski proces koji pretvara povratne informacije mentora u strukturirani set podataka za obuku i periodično usavršava LLM. Ovaj modul omogućava agentu da uči kako da rezonuje, a ne samo šta da zna.
+Ovakav pristup osigurava da sistem evoluira. Početna faza se oslanja na pretragu i sintezu postojećih informacija (Retrieval-Augmented Generation - RAG), dok svaka interakcija i korekcija postepeno transformiše model, ugrađujući u njega suptilne nijanse pravnog rezonovanja koje se ne mogu naći u sirovom tekstu.
+
+1.2. Arhitektonski Dijagram
+
+Tok podataka i kontrolnih signala unutar sistema 'Drveni advokat' je ključan za razumevanje njegove dinamike. Dijagram ispod vizuelno predstavlja celokupan radni proces, od postavljanja upita do ažuriranja modela na osnovu ekspertske korekcije.
+Tok Interakcije i Rezonovanja:
+Korisnik (advokat) unosi upit (User Query) putem Streamlit UI.
+Streamlit aplikacija prosleđuje upit LangChain RAG Agentu.
+Agent koristi Embedding Model da pretvori upit u vektorsku reprezentaciju.
+Agent pretražuje vektorsku bazu Qdrant za relevantne dokumente (fragmente predmeta).
+Preuzeti dokumenti i originalni upit se formatiraju u prompt i šalju lokalnom LLM (Ollama).
+LLM generiše odgovor (LLM Response) na osnovu pruženog konteksta.
+Odgovor se prikazuje korisniku u Streamlit UI.
+Tok Učenja i Korekcije:
+Korisnik ocenjuje odgovor i unosi ispravku (Expert Feedback) u Streamlit UI.
+Interfejs beleži kompletan kontekst interakcije (upit, istorijat, originalni odgovor, ispravka) u Feedback Log (JSONL) datoteku.
+Periodično, Fine-Tuning Script se pokreće, obrađujući Feedback Log.
+Skripta generiše set podataka za obuku i koristi ga za fino podešavanje LLM-a putem LoRA tehnike, stvarajući novi LoRA Adapter.
+Prilikom sledećeg pokretanja, LangChain RAG Agent učitava osnovni Local LLM i primenjuje na njega najnoviji LoRA Adapter, čime agent postaje "pametniji".
+Ovaj dvostruki ciklus—jedan za rezonovanje u realnom vremenu i drugi za periodično učenje—čini srž arhitekture i omogućava sistemu da se kontinuirano usavršava.
+
+1.3. Ključne Tehničke Odluke i Obrazloženja
+
+Svaka komponenta u arhitekturi je pažljivo odabrana da ispuni specifične zahteve projekta, sa posebnim naglaskom na lokalno izvršavanje, performanse i sposobnost učenja.
+Mandat "Lokalno-Prvo" (Local-First): Primarni cilj projekta je potpuna privatnost i autonomija. Ova odluka momentalno isključuje sve cloud-bazirane API servise za konverziju dokumenata 1, LLM-ove ili baze podataka. Celokupan sistem, od obrade podataka do inferencije modela, mora se izvršavati na lokalnom hardveru.
+Odabir Velikog Jezičkog Modela (LLM): Umesto korišćenja generičkog modela kao što je mistralai/Mistral-7B-v0.1, projekat će započeti sa modelom koji je već prošao fazu kontinuiranog pre-treninga na srpskom, odnosno BCS (bosanski, hrvatski, srpski) jezicima. Dva primarna kandidata su gordicaleksa/YugoGPT 4 i
+iskonai/prodigy-sm-base-v0.1.5 Ovi modeli, zasnovani na Mistral 7B arhitekturi, pružaju značajnu prednost u razumevanju jezičkih i pravnih nijansi specifičnih za domaći kontekst, smanjujući potrebu za masivnim početnim finim podešavanjem.
+Odabir Vektorske Baze Podataka: Izbor pada na Qdrant umesto na alternative poput ChromaDB. Razlog je višestruk: Qdrant nudi superiorne performanse, dokazanu skalabilnost i, što je najvažnije za ovaj projekat, napredne mogućnosti filtriranja po metapodacima.6 Pravni upiti često zahtevaju kombinaciju semantičke pretrage ("slučajevi slični ovome") i striktnog filtriranja ("gde je sudija bio X" ili "posle 2010. godine"). Qdrant-ova sposobnost da efikasno izvrši pre-filtriranje pretrage na osnovu indeksiranih metapodataka je ključna funkcionalnost.9
+Okviri za Razvoj (Development Frameworks): LangChain će služiti kao orkestrator za RAG cevovod, omogućavajući modularno i jasno definisanje logike pretrage i generisanja.11 Za interaktivni interfejs,
+Streamlit je odabran zbog svoje jednostavnosti i brzine razvoja, što omogućava fokus na funkcionalnost petlje za povratne informacije bez potrebe za kompleksnim web developmentom.14
+Ove odluke zajedno formiraju koherentnu i robusnu osnovu, optimizovanu za specifične ciljeve projekta 'Drveni advokat', gde je interaktivno učenje i usavršavanje modela centralni, a ne sporedni, element sistema.
+
+II. Faza 1: Kovanje Jezgra Znanja - Unos 200 GB Pravnih Precedenata
+
+Ovo je najkritičnija i radno najintenzivnija faza projekta. Kvalitet celokupnog sistema zavisi od uspešne, pouzdane i potpune obrade arhive od 200 GB .doc datoteka. Neuspeh u ovoj fazi predstavlja neuspeh celog projekta. Stoga, pristup mora biti metodičan i robustan, tretirajući ovaj korak kao industrijski ETL (Extract, Transform, Load) proces, a ne kao jednostavno čitanje datoteka.
+
+2.1. Izazov Konverzije .doc Formata: Strategija i Implementacija
+
+Problem: Stari .doc format je binarni, vlasnički format Microsoft Worda (pre 2007). Direktno parsiranje ovog formata u Python-u je izuzetno nepouzdano. Biblioteke kao što je python-docx eksplicitno podržavaju samo moderni, na XML-u zasnovan .docx format.16 Alati poput
+textract često deluju kao omotači oko eksternih komandnih alata kao što je antiword 19, čija podrška za kompleksno formatiranje, tabele, i specifične verzije
+.doc formata može biti ograničena.21 Za korpus ove veličine i važnosti, potreban je pouzdaniji metod.
+Odabrana Strategija: Orkestracija putem Komandne Linije: Najrobusniji pristup je kreiranje Python skripte koja koristi subprocess modul za pozivanje moćnog, eksternog alata za konverziju za svaku .doc datoteku. Ovo razdvaja logiku našeg programa od kompleksnosti samog procesa konverzije.
+Odabir Alata:
+Primarna Preporuka: LibreOffice (soffice): LibreOffice je poznat po svojoj izvanrednoj kompatibilnosti sa širokim spektrom starih formata dokumenata. Njegov interfejs komandne linije je izuzetno moćan i idealan za skriptovanje masovnih konverzija.22 Može se pokrenuti u
+--headless režimu, što znači da ne zahteva grafički interfejs i savršen je za automatizovane, pozadinske zadatke.25 Ovo je najpouzdaniji metod za ovaj projekat.
+Alternativa (Samo za Windows): pywin32: Ova biblioteka omogućava automatizaciju same Microsoft Word aplikacije putem COM (Component Object Model) interfejsa.28 Iako je ovo validan pristup, on je inherentno krhkiji za masovnu obradu. Zahteva punu instalaciju MS Word-a, podložan je greškama koje aplikacija može prikazati (npr. iskačući prozori), i generalno je sporiji i manje stabilan za dugotrajne, ne-nadzirane procese.30
+pywin32 će biti razmatran kao rezervna opcija, ali se soffice preporučuje kao primarno rešenje.
+Skripta za Konverziju (convert_corpus.py):
+Ova skripta mora biti dizajnirana sa naglaskom na robusnost, logovanje i mogućnost nastavka prekinutog procesa.
+Rekurzivno Skeniranje: Koristiti os.walk za prolazak kroz celokupnu strukturu direktorijuma od 200 GB.
+Konstrukcija Komande: Za svaku pronađenu .doc datoteku, dinamički konstruisati komandu za soffice, na primer: soffice --headless --convert-to docx --outdir "<ciljni_direktorijum>" "<izvorna_datoteka.doc>". Ciljni direktorijum treba da preslikava strukturu izvornog direktorijuma kako bi se sačuvala organizacija.
+Izvršavanje i Logovanje: Izvršiti komandu koristeći subprocess.run. Neophodno je uhvatiti standardni izlaz (stdout) i standardni izlaz za greške (stderr). Svaki pokušaj konverzije, bilo da je uspešan ili neuspešan, mora biti zabeležen u datoteku conversion_log.txt. U slučaju greške, kompletan stderr mora biti sačuvan radi kasnije analize.
+Mogućnost Nastavka (Resumability): Pre pokušaja konverzije, skripta mora proveriti da li ciljna .docx datoteka već postoji. Ako postoji, preskočiti konverziju i zabeležiti to u log. Ovo je ključno jer proces konverzije može trajati danima i verovatno će biti prekidan. Bez ove funkcionalnosti, svaki prekid bi zahtevao početak od nule.
+
+2.2. Ekstrakcija Teksta i Metapodataka iz .docx Formata
+
+Nakon uspešne konverzije celokupnog korpusa u .docx format, sledi faza ekstrakcije informacija.
+Odabir Parsera: Biblioteka python-docx je industrijski standard za rad sa .docx datotekama u Python-u.16 Ona pruža strukturiran pristup sadržaju dokumenta, omogućavajući iteraciju kroz paragrafe, tabele, sekcije i druge elemente.
+Ekstrakcija Metapodataka: Metapodaci su jednako važni kao i sam tekstualni sadržaj, jer omogućavaju kasnije precizno filtriranje. Ekstrakcija će se vršiti na dva nivoa:
+Ugrađeni Metapodaci (Core Properties): Koristeći doc.core_properties objekat iz python-docx, ekstrahovaće se standardna polja kao što su autor (author), datum kreiranja (created), datum izmene (modified), naslov (title) i komentari (comments).33
+Izvedeni Metapodaci (Content-Derived Metadata): Najvredniji metapodaci se nalaze unutar samog teksta. Koristiće se modul za regularne izraze (re) za parsiranje teksta i pronalaženje ključnih, strukturiranih informacija. Obrasci će biti definisani za pronalaženje specifičnih pravnih termina kao što su: Broj predmeta:, Sudija:, Tužilac:, Tuženi:, Sud:, Datum presude:, itd. Ovi podaci će biti ekstrahovani i sačuvani kao strukturirana polja.
+Rukovanje Kodiranjem Znakova (Character Encoding): S obzirom da korpus sadrži srpske dijakritičke znakove (š, đ, č, ć, ž), sve operacije čitanja i pisanja datoteka moraju eksplicitno koristiti encoding='utf-8' kako bi se izbegla korupcija podataka.35 Srećom,
+.docx format je zasnovan na XML-u, koji je inherentno UTF-8, tako da python-docx biblioteka ovo rešava transparentno.38
+
+2.3. Čišćenje, Strukturiranje i Segmentacija Podataka
+
+Sirovi tekst iz dokumenata nije pogodan za direktnu upotrebu u RAG sistemu. Potrebna je pažljiva priprema.
+Čišćenje Podataka (Data Cleaning): Pravni dokumenti sadrže veliku količinu repetitivnog, "boilerplate" teksta—zaglavlja, podnožja, pečati, standardne pravne formulacije, itd. Potrebno je razviti funkcije koje će identifikovati i ukloniti ove delove teksta. Uklanjanje ovog "šuma" je ključno za poboljšanje odnosa signala i šuma u vektorskoj pretrazi, osiguravajući da se pretraga fokusira na suštinski sadržaj predmeta.
+Strukturiranje za Unos: Svaki originalni dokument će biti transformisan u jedan ili više JSON objekata koji sadrže sve relevantne informacije. Ova struktura će biti osnova za unos u vektorsku bazu.
+
+JSON
+
+
+{
+  "source_file": "putanja/do/originalnog.doc",
+  "case_id": "P-123-2005",
+  "full_text": "Kompletan očišćen tekst dokumenta...",
+  "metadata": {
+    "judge": "Marko Marković",
+    "plaintiff": "Petar Petrović",
+    "defendant": "Jovan Jovanović",
+    "decision_date": "2006-11-15",
+    "court": "Osnovni sud u Beogradu",
+    "document_type": "Presuda"
+  }
+}
+
+
+Strategija Segmentacije (Chunking): Veliki jezički modeli imaju ograničen kontekstni prozor. Stoga, dugi dokumenti moraju biti podeljeni na manje, semantički koherentne delove (chunks).
+Metod: Koristiće se RecursiveCharacterTextSplitter iz LangChain biblioteke. Međutim, umesto generičkih separatora, biće konfigurisani da koriste separatore koji imaju smisla u pravnom kontekstu, kao što su dvostruki prelom reda (\n\n), reference na članove zakona (Član...), ili podnaslovi unutar dokumenta.
+Nasleđivanje Metapodataka: Svaki generisani segment (chunk) će naslediti sve metapodatke od svog roditeljskog dokumenta. Ovo je od suštinskog značaja, jer omogućava da se prilikom pretrage vrati mali, relevantan segment teksta, ali da se uz njega dobije i kompletan kontekst (broj predmeta, sudija, itd.) iz kojeg potiče.
+Ova temeljna i pažljiva priprema podataka osigurava da će znanje uneto u 'Drvenog advokata' biti čisto, strukturirano i maksimalno iskoristivo za kasnije faze rezonovanja i učenja.
+
+III. Faza 2: Izgradnja Mehanizma za Rezonovanje - RAG Sistem za Pravnu Analizu
+
+Sa pripremljenom i strukturiranom bazom znanja, sledeći korak je izgradnja jezgra sistema koje će omogućiti 'Drvenom advokatu' da rezonuje i odgovara na upite. Ova faza se fokusira na postavljanje lokalne AI infrastrukture i orkestraciju toka informacija neophodnog za napredno pretraživanje i generisanje odgovora.
+
+3.1. Postavljanje Lokalnog LLM-a i Okruženja
+
+Ollama za Serviranje Modela: Za upravljanje i serviranje velikog jezičkog modela (LLM) na lokalnoj mašini, koristiće se Ollama.39 Ollama pojednostavljuje proces preuzimanja, pokretanja i interakcije sa LLM-ovima, pružajući standardizovan API endpoint (
+http://localhost:11434) na koji se LangChain može lako povezati.41 Ovo apstrahuje kompleksnost direktnog upravljanja modelom, učitavanjem na GPU i konfiguracijom inferentnog servera.
+Odabir Modela: Kao što je definisano u temeljnoj arhitekturi, polazna tačka neće biti generički model. Koristiće se model koji je već prošao pre-trening na srpskom jeziku, čime se osigurava bolje fundamentalno razumevanje jezika i terminologije. Primarni izbor je gordicaleksa/YugoGPT, koji se može pokrenuti direktno putem Ollama komande: ollama run gordicaleksa/YugoGPT.4 Ovaj model je zasnovan na Mistral 7B, što garantuje kompatibilnost sa ostalim odabranim alatima, dok mu BCS pre-trening daje superiornu polaznu osnovu.
+Model za Embedinge (Embedding Model): Za pretvaranje tekstualnih segmenata u vektorske reprezentacije (embedinge), koristiće se visokokvalitetan, open-source model iz sentence-transformers biblioteke, kao što je sentence-transformers/all-MiniLM-L6-v2 ili sličan model optimizovan za višejezične primene. Ovaj model će se takođe izvršavati lokalno.
+
+3.2. Implementacija Vektorske Baze Podataka sa Qdrant-om
+
+Postavljanje (Setup): Qdrant će biti pokrenut lokalno koristeći zvaničnu Docker sliku.42 Ovo je jednostavan i pouzdan način za postavljanje produkciono spremne vektorske baze podataka. Pokretanje se vrši komandom koja mapira neophodne portove i montira lokalni volumen za perzistentnost podataka.
+Kreiranje Kolekcije: Koristeći qdrant-client Python biblioteku, napisaće se skripta za kreiranje kolekcije.44 Ključni koraci su:
+Definisanje imena kolekcije (npr. pravni_predmeti).
+Definisanje vektorskih parametara: size (dimenzionalnost) mora odgovarati izlaznoj dimenziji odabranog embedding modela, a distance metrika (npr. Cosine ili Dot) treba da bude usklađena sa načinom na koji je embedding model treniran.
+Kreiranje Indeksa za Metapodatke (Payload Indexes): Ovo je najvažniji korak specifičan za ovaj projekat. Za svaki ekstrahovani metapodatak (case_id, judge, decision_date, court, itd.), kreiraće se odgovarajući indeks unutar Qdrant-a.43
+Ovaj poslednji korak je od fundamentalnog značaja. Dok standardni RAG sistemi vrše isključivo semantičku pretragu nad celim korpusom, pravna praksa zahteva daleko preciznije upite. Na primer, upit "Prikaži mi slične slučajeve pred Vrhovnim sudom u vezi sa naknadom štete posle 2010. godine" sadrži i semantički deo ("naknada štete") i striktne filtere ("Vrhovni sud", "posle 2010").
+Qdrant-ova sposobnost da prvo izvrši brzo filtriranje na osnovu indeksiranih metapodataka (court: "Vrhovni sud", date > 2010-01-01) drastično sužava prostor pretrage.8 Tek unutar tog znatno manjeg i relevantnijeg podskupa dokumenata, Qdrant vrši semantičku (vektorsku) pretragu. Ovo pretvara sistem iz jednostavnog pretraživača u moćan alat za pravno istraživanje. Implementacija u LangChain-u mora biti dizajnirana tako da
+retriever prihvata ne samo tekstualni upit, već i strukturirane filtere, omogućavajući hibridnu pretragu.46
+
+3.3. Indeksiranje Korpusa
+
+Skripta (index_corpus.py): Ova skripta će izvršiti masovni unos pripremljenih podataka u Qdrant.
+Učitava strukturirane JSON datoteke kreirane u Fazi 1.
+Za svaki dokument, iterira kroz njegove tekstualne segmente (chunks).
+Za svaki segment, koristi sentence-transformer model da generiše vektorski embedding.
+Poziva qdrant_client.upsert() metodu da unese "tačku" (point) u kolekciju. Svaka tačka se sastoji od jedinstvenog ID-a, generisanog vektora i "payload-a" koji sadrži sam tekst segmenta i sve nasleđene metapodatke od roditeljskog dokumenta.43
+Ovaj proces će se izvršavati u serijama (batches) radi efikasnosti.
+
+3.4. Orkestracija RAG-a pomoću LangChain-a
+
+LangChain će se koristiti za povezivanje svih komponenti u funkcionalan cevovod za odgovaranje na pitanja.
+Osnovne Komponente: Koristiće se LangChain Expression Language (LCEL) za deklarativno i transparentno definisanje lanca.48
+Lanac (The Chain):
+Ulaz (Input): Pitanje korisnika.
+Retriever: Objekat kreiran sa QdrantVectorStore.as_retriever().49 Ovaj retriever će biti konfigurisan da prima i dinamičke filtere za metapodatke.
+Šablon Prompta (Prompt Template): Pažljivo sastavljen prompt koji daje LLM-u instrukcije da se ponaša kao ekspert srpskog prava. Ključne instrukcije su:
+Odgovor mora biti zasnovan isključivo na pruženom kontekstu (dokumentima koje je vratio retriever).
+Zabranjeno je "haluciniranje" ili korišćenje internog znanja modela.
+Odgovor mora biti jasan, koncizan i na srpskom jeziku.
+Kada je primenjivo, potrebno je citirati izvore (npr. navođenjem broja predmeta iz metapodataka).
+LLM: Instanca langchain_community.llms.Ollama klase, usmerena na lokalno pokrenut YugoGPT model.51
+Izlazni Parser (Output Parser): Standardni StrOutputParser za dobijanje konačnog tekstualnog odgovora.
+Finalna Skripta (rag_agent.py): Ova skripta će sadržati kompletan, izvršni lanac. Biće dizajnirana kao modularna funkcija ili klasa koja se može lako uvesti i koristiti unutar Streamlit aplikacije u sledećoj fazi.51
+
+IV. Faza 3: Interaktivna Konzola - Interfejs za 'Drvenog Advokata'
+
+Ova faza se fokusira na izgradnju mosta između mentora-advokata i AI agenta. Interfejs mora biti jednostavan, intuitivan i, što je najvažnije, efikasan u prikupljanju visokokvalitetnih povratnih informacija koje su neophodne za pokretanje petlje učenja. Streamlit je odabran kao tehnologija koja omogućava brzu izradu funkcionalnog i interaktivnog korisničkog interfejsa sa minimalnim naporom.
+
+4.1. Izgradnja Streamlit Chat Interfejsa (app.py)
+
+Osnovni Interfejs: Jezgro aplikacije će biti chat interfejs, kreiran pomoću st.chat_input za unos korisničkih poruka i st.chat_message za njihovo prikazivanje.15 Ovo stvara poznato okruženje za konverzaciju.
+Upravljanje Stanjem Sesije (Session State): Da bi se održao kontinuitet razgovora, celokupna istorija interakcije (pitanja korisnika i odgovori agenta) biće čuvana u st.session_state.15
+st.session_state je mehanizam koji Streamlit pruža za čuvanje varijabli između ponovnih izvršavanja skripte, što se dešava nakon svake interakcije korisnika. Istorija će biti čuvana kao lista rečnika, gde svaki rečnik predstavlja jednu poruku sa ključevima kao što su role ("user" ili "assistant") i content (tekst poruke).
+Prikaz Istorije: Prilikom svakog ponovnog pokretanja aplikacije, skripta će prvo proći kroz listu poruka u st.session_state.history i iscrtati sve prethodne poruke. Ovo osigurava da korisnik uvek vidi ceo tok trenutne konverzacije.
+
+4.2. Implementacija Mehanizma za Povratne Informacije
+
+Komponenta za Feedback: Za prikupljanje ocena odgovora, koristiće se komponenta streamlit-feedback. Ova komponenta omogućava jednostavno dodavanje "palac gore/dole" (thumbs) ili drugih tipova ocena uz poruke.53
+Integracija: Za svaki odgovor koji generiše AI asistent, biće prikazan i streamlit_feedback vidžet. Ključni deo implementacije je dodeljivanje jedinstvenog key atributa svakom vidžetu. Ovaj ključ se obično formira na osnovu indeksa poruke u istoriji razgovora (npr. f"feedback_{i}"), što omogućava Streamlit-u da pravilno upravlja stanjem svakog pojedinačnog vidžeta.15
+Polje za Korekciju: Pored jednostavne ocene "palac gore/dole", što je signal niskog kvaliteta, najvažniji element je polje za unos teksta gde mentor može da pruži detaljnu ispravku. Ovo će biti implementirano pomoću st.text_area sa jasnim natpisom, na primer: "Ispravka ili bolji odgovor:". U ovo polje advokat će unositi "zlatni standard" odgovora, ispravljajući logiku, stil ili činjeničnu tačnost odgovora agenta. Ovaj tekstualni unos je najvredniji podatak za buduće fino podešavanje modela.
+
+4.3. Prikupljanje i Skladištenje Povratnih Informacija za Fino Podešavanje
+
+Callback Funkcija: Interakcija sa streamlit-feedback vidžetom i unos teksta u polje za ispravku biće povezani sa funkcijom za čuvanje podataka. on_change parametar streamlit-feedback komponente će pozvati save_feedback_to_log funkciju.15 Slično, unos u
+st.text_area će biti sačuvan.
+Struktura Podataka: Kada se povratna informacija zabeleži, funkcija će prikupiti kompletan snimak interakcije. Nije dovoljno sačuvati samo loš i dobar odgovor. Za efikasno fino podešavanje, modelu je potreban ceo kontekst. Podaci koji se čuvaju uključuju:
+Originalni upit korisnika koji je doveo do odgovora.
+Celokupnu istoriju razgovora do tog trenutka, radi konteksta.
+Odgovor agenta koji se koriguje.
+Ocenu (npr. "thumb_down").
+Tekstualnu ispravku koju je uneo ekspert.
+Perzistencija: Prikupljeni podaci će biti serijalizovani u JSON format i dodati kao novi red u datoteku feedback_log.jsonl. Format JSONL (JSON Lines) je idealan za logovanje jer je svaka linija samostalni, validni JSON objekat. Ovo omogućava lako i efikasno dodavanje novih zapisa (append) i kasnije čitanje, bez potrebe za parsiranjem cele datoteke.54
+Tabela 1: Struktura Datoteke feedback_log.jsonl
+Ova tabela definiše šemu podataka koji se prikupljaju. Konzistentna i bogata struktura je preduslov za automatizovanu obradu u Fazi 4. Svaki red u ovoj datoteci predstavlja jedan primer za potencijalni trening.
+Ključ (Key)
+Tip Podatka
+Opis
+timestamp
+String (ISO 8601)
+Tačno vreme kada je povratna informacija zabeležena.
+session_id
+String
+Jedinstveni identifikator za celu konverzacionu sesiju.
+user_query
+String
+Konkretan upit korisnika koji je generisao odgovor koji se ocenjuje.
+conversation_history
+Lista Rečnika
+Lista svih prethodnih poruka ({"role":..., "content":...}) u sesiji.
+agent_response
+String
+Kompletan tekst odgovora agenta koji se koriguje.
+feedback_score
+String
+Ocena data putem streamlit-feedback komponente (npr. "👍" ili "👎").
+expert_correction
+String
+Tekstualna ispravka uneta od strane advokata. Ovo je ciljni izlaz za fino podešavanje.
+retrieved_context
+Lista Stringova
+(Opciono, ali preporučljivo) Lista segmenata teksta koje je RAG sistem preuzeo i koristio za generisanje agent_response.
+
+Uključivanje retrieved_context je veoma korisno jer omogućava analizu da li je problem bio u lošem preuzimanju dokumenata ili u lošem rezonovanju LLM-a na osnovu dobrih dokumenata.
+
+V. Faza 4: Petlja Učenja - Implementacija Samokorekcije i Usavršavanja
+
+Ovo je najnaprednija faza projekta, gde 'Drveni advokat' prelazi sa nivoa alata koji poseduje znanje na nivo pripravnika koji uči. U ovoj fazi se automatizuje proces transformacije ekspertske povratne informacije u merljivo poboljšanje performansi modela. Ovaj ciklus učenja je ono što projektu daje dugoročnu vrednost i omogućava mu da zaista postane digitalno nasleđe.
+
+5.1. Kreiranje Seta Podataka za Fino Podešavanje iz Povratnih Informacija
+
+Skripta (prepare_finetune_data.py): Svrha ove skripte je da sirove logove povratnih informacija pretvori u čist, strukturiran set podataka pogodan za obuku.
+Učitavanje Logova: Skripta će čitati feedback_log.jsonl datoteku, red po red.
+Filtriranje: Proces će se fokusirati na primere koji predstavljaju jasne signale za učenje. To znači filtriranje zapisa koji imaju negativnu ocenu (npr. "thumb_down") i gde postoji popunjen expert_correction tekst. Ovi zapisi predstavljaju parove "loš odgovor -> dobar odgovor".
+Formatiranje: Svaki filtrirani zapis će biti transformisan u format pogodan za SFTTrainer (Supervised Fine-tuning Trainer) iz trl biblioteke. "Alpaca" stil formatiranja je dobro uspostavljen standard koji se sastoji od instrukcije, opcionog ulaza i izlaza.56 Za ovaj projekat, format može izgledati ovako:
+JSON
+{
+  "instruction": "Na osnovu sledećeg konteksta iz relevantnih predmeta, odgovori na pitanje korisnika. Kontekst: [tekst preuzetih dokumenata]. Pitanje: [originalni upit korisnika]",
+  "output": "[tekstualna ispravka od strane eksperta]"
+}
+
+Alternativno, i često robusnije, ceo primer se može formatirati kao jedan tekstualni niz koji SFTTrainer može direktno da koristi, kombinujući instrukciju i odgovor u jedinstveni format koji model uči da prati.58 Na primer:
+
+<s> {instrukcija} {očekivani_odgovor} </s>
+Izlaz: Skripta će generisati novu datoteku, finetuning_dataset.jsonl, koja sadrži samo formatirane primere spremne za obuku.
+
+5.2. Parametarski Efikasno Fino Podešavanje (PEFT) sa LoRA
+
+Koncept: Potpuno fino podešavanje (full fine-tuning) modela od 7 milijardi parametara je izuzetno zahtevno u pogledu računarskih resursa, posebno VRAM-a. LoRA (Low-Rank Adaptation) je PEFT tehnika koja rešava ovaj problem. Umesto da menja sve težine modela, LoRA zamrzava originalne težine i dodaje male, "adapter" slojeve koji se jedini treniraju.60 Broj parametara koji se treniraju je drastično manji (često <1% od ukupnog broja), što značajno smanjuje zahteve za memorijom i omogućava fino podešavanje na potrošačkom hardveru (10GB VRAM je dovoljno za LoRA na 7B modelu, posebno uz kvantizaciju).62
+Skripta (run_finetuning.py):
+Učitavanje Osnovnog Modela i Tokenizatora: Učitati YugoGPT model koristeći transformers biblioteku. Ključno je učitati model sa 4-bitnom kvantizacijom (BitsAndBytesConfig) kako bi se maksimalno smanjila potrošnja VRAM-a.63
+Učitavanje Seta Podataka: Učitati finetuning_dataset.jsonl kreiran u prethodnom koraku.
+Konfiguracija LoRA: Definisati LoraConfig objekat iz peft biblioteke. Ovde se specificiraju ključni hiperparametri, kao što su r (rang), lora_alpha, i target_modules (slojevi modela na koje će se primeniti LoRA, obično slojevi pažnje kao što su q_proj, v_proj).62
+Instanciranje Trenera: Kreirati instancu SFTTrainer iz trl biblioteke, prosleđujući joj kvantizovani model, set podataka, tokenizator i LoRA konfiguraciju.64
+Obuka: Pozvati trainer.train(). Ovaj proces će trajati određeno vreme (zavisno od veličine seta podataka), ali će trenirati samo male LoRA adaptere.
+Čuvanje Adaptera: Nakon završetka obuke, sačuvati težine adaptera pomoću trainer.model.save_pretrained(). Rezultat neće biti novi model od 7B, već mala datoteka (nekoliko desetina do stotina megabajta) koja sadrži samo težine adaptera.
+
+5.3. Automatizacija Ciklusa Ažuriranja Modela
+
+Strategija: Nije potrebno ponovo trenirati model od nule svaki put. Fino podešavanje se može pokretati periodično (npr. jednom dnevno ili nedeljno), samo ako su u feedback_log.jsonl dodate nove korekcije.
+Dinamičko Učitavanje: Glavna skripta agenta (rag_agent.py) će biti modifikovana. Prilikom pokretanja, ona će prvo učitati osnovni, kvantizovani YugoGPT model. Zatim će proveriti da li postoji sačuvan LoRA adapter u predviđenom direktorijumu. Ako adapter postoji, koristiće PeftModel.from_pretrained() da dinamički spoji težine adaptera sa osnovnim modelom u memoriji. Ovo osigurava da agent uvek radi sa najnovijom verzijom znanja i rezonovanja koje je naučio iz korekcija, bez potrebe za permanentnim spajanjem modela.
+
+5.4. Napredna Samokorekcija: Prompting za Internu Kritiku
+
+Pored eksterne petlje učenja vođene mentorskim ispravkama, moguće je implementirati i internu petlju gde agent sam kritikuje svoje odgovore pre nego što ih prikaže korisniku. Ovo se postiže kroz napredne tehnike promptinga.
+Implementacija Self-Refine: Lanac u LangChain-u se može proširiti da uključi korake samorefleksije.65
+Inicijalna Generacija: Agent generiše odgovor na osnovu preuzetog konteksta, kao i do sada.
+Prompt za Samokritiku: Pre prikazivanja odgovora, agent interno poziva LLM ponovo, sa novim promptom koji sadrži originalno pitanje i generisani odgovor. Primer prompta: "Ovo je pitanje korisnika i moj predloženi odgovor. Kritički preispitaj odgovor. Da li je odgovor direktno povezan sa pitanjem? Da li su sve tvrdnje potkrepljene u priloženom kontekstu? Da li postoji logička nedoslednost? Navedi potencijalne nedostatke."
+Prompt za Finalno Usavršavanje: Agent uzima originalno pitanje, inicijalni odgovor i sopstvenu kritiku i poziva LLM poslednji put sa promptom: "Na osnovu sledećih kritika, usavrši prvobitni odgovor kako bi bio precizniji i pouzdaniji."
+Sinergija Dve Petlje Učenja: Ove dve petlje—eksterna (mentor) i interna (samokritika)—nisu međusobno isključive, već su sinergijske.
+Eksterna petlja, vođena ispravkama advokata, uči model fundamentalnim obrascima pravnog rezonovanja. Fino podešavanje sa LoRA ne samo da uči model tačnim odgovorima, već ga uči stilu i načinu razmišljanja.
+Interna petlja (Self-Refine) daje modelu mehanizam da primeni to naučeno rezonovanje u realnom vremenu, na novim, neviđenim problemima.
+Model koji je kroz fino podešavanje naučio da rezonuje sličnije ekspertu biće takođe bolji u prepoznavanju nedostataka u sopstvenom rezonovanju tokom koraka samokritike. Ovo stvara moćan pozitivan ciklus: mentorske ispravke poboljšavaju osnovno rezonovanje modela, što zauzvrat poboljšava njegovu sposobnost samokorekcije, što dovodi do boljih inicijalnih odgovora koji zahtevaju manje ispravki u budućnosti. Ova sinergija je ključ za skaliranje ekspertize agenta izvan specifičnih primera koji su ispravljeni.
+
+VI. Strateške Preporuke i Mapa Puta Projekta
+
+Ovaj završni odeljak pruža jasan, fazni plan za razvoj i preporuke za upravljanje projektom, osiguravajući da se kompleksnost rešava na strukturiran i upravljiv način.
+
+6.1. Fazna Mapa Puta za Razvoj
+
+Projekat treba razvijati u diskretnim, logičkim fazama. Svaka faza treba da rezultira funkcionalnom komponentom, omogućavajući iterativni napredak i testiranje.
+Faza 1 - Temelj Podataka (Data Foundation): Apsolutni prioritet je skripta za konverziju .doc formata i ekstrakciju podataka. Ova faza je završena tek kada postoji čist, strukturiran JSONL set podataka koji predstavlja celokupan korpus od 200 GB. Pre nego što je ovaj korak 100% završen i verifikovan, ne treba prelaziti na sledeće faze.
+Faza 2 - Jezgro RAG Agenta (Core RAG Agent): Izgraditi osnovni RAG agent koristeći Ollama, Qdrant i LangChain. Cilj ove faze je funkcionalan sistem za pitanja i odgovore koji se u potpunosti oslanja na pretragu (retrieval). U ovoj fazi, agent još uvek ne uči.
+Faza 3 - Interaktivni Interfejs (Interactive Interface): Razviti Streamlit korisnički interfejs i integrisati mehanizam za povratne informacije. Povezati ga sa agentom iz Faze 2. Od ovog trenutka, može se početi sa korišćenjem sistema i prikupljanjem ispravki u feedback_log.jsonl datoteku.
+Faza 4 - Petlja Učenja (The Learning Loop): Nakon što se prikupi dovoljna količina podataka o povratnim informacijama (npr. 50-100 kvalitetnih ispravki), implementirati skripte za pripremu podataka i fino podešavanje (prepare_finetune_data.py i run_finetuning.py). Implementirati mehanizam za dinamičko učitavanje LoRA adaptera.
+Faza 5 - Napredno Usavršavanje (Advanced Refinement): Kada je petlja učenja uspostavljena i funkcionalna, implementirati interne tehnike samokritike (npr. Self-Refine) unutar LangChain lanca kako bi se dodatno poboljšala pouzdanost i tačnost odgovora u realnom vremenu.
+
+6.2. Upravljanje Projektom za Individualnog Programera
+
+S obzirom na to da je ovo projekat koji vodi jedna osoba, ključno je održati ga organizovanim i upravljivim.
+Jednostavnost je Ključ: Zahtev da se izbegne "previše.py fajlova" je mudar. Kod treba organizovati u logičke celine koje odgovaraju fazama razvoja:
+convert_corpus.py: Za Fazu 1 (konverzija).
+extract_and_structure.py: Za Fazu 1 (ekstrakcija).
+index_corpus.py: Za Fazu 2 (indeksiranje u Qdrant).
+rag_agent.py: Definicija LangChain lanca i logike agenta.
+app.py: Glavna Streamlit aplikacija.
+finetuning.py: Skripta koja objedinjuje pripremu podataka i pokretanje LoRA treninga.
+config.py: Centralno mesto za sve konfiguracione parametre (putanje, imena modela, URL-ovi).
+Kontrola Verzija (Version Control): Koristiti Git od prvog dana. Ovo je neprocenjivo za praćenje promena, posebno u promptovima, konfiguracijama modela i logici lanca. Omogućava sigurno eksperimentisanje sa mogućnošću povratka na prethodnu stabilnu verziju.
+Iterativni Pristup: Striktno se pridržavati fazne mape puta. Ne pokušavati izgraditi sve odjednom. Svaka faza treba da bude mini-projekat sa jasnim ciljem. Ovaj pristup sprečava preopterećenje, omogućava redovno testiranje i pruža osećaj konstantnog napretka, što je ključno za održavanje motivacije na dugoročnom, solo projektu. Po završetku svake faze, treba napraviti rezervnu kopiju (backup) celokupnog radnog direktorijuma i generisanih podataka.
