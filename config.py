@@ -16,6 +16,7 @@ DEFAULT_LLM_MODEL = "mistral:7b"  # Promenite na "YugoGPT" ako želite koristiti
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
 DEFAULT_DEVICE = "cuda" #####ili cuda za NVIDIA GPU
 OLLAMA_HOST = "http://localhost:11434" # Eksplicitno definisanje Ollama hosta
+LAST_USED_MODEL_FILE = "last_used_model.txt"
 
 
 # Parametri za Indeksiranje (moraju odgovarati embedding modelu)

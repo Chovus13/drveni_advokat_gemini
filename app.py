@@ -2,6 +2,7 @@
 # FAJL: app.py (Ažurirana verzija 3.1 - Ispravka za Ollama)
 # ==============================================================================
 
+import os
 import streamlit as st
 import ollama
 import psutil
@@ -11,18 +12,39 @@ import config
 
 # --- Pomoćne Funkcije ---
 
+def get_last_used_model():
+    """Pročitaj poslednji korišćeni model iz fajla"""
+    try:
+        if os.path.exists(config.LAST_USED_MODEL_FILE):
+            with open(config.LAST_USED_MODEL_FILE, "r", encoding="utf-8") as f:
+                return f.read().strip()
+    except Exception as e:
+        st.error(f"Greška pri čitanju poslednjeg modela: {e}")
+    return config.DEFAULT_LLM_MODEL
+
+def save_last_used_model(model_name: str):
+    """Sačuvaj poslednji korišćeni model u fajl"""
+    try:
+        with open(config.LAST_USED_MODEL_FILE, "w", encoding="utf-8") as f:
+            f.write(model_name)
+    except Exception as e:
+        st.error(f"Greška pri snimanju poslednjeg modela: {e}")
+
 def get_ollama_models():
     """Pribavlja listu preuzetih modela iz Ollama na robustan način."""
     try:
         client = ollama.Client(host=config.OLLAMA_HOST)
         models_data = client.list().get('models', [])
-        # Filtriramo samo modele koji imaju 'name' ključ da bismo izbegli greške
-        return [model['name'] for model in models_data if 'name' in model]
+        # Filtriramo samo modele koji imaju 'name' ključ
+        models = [model['name'] for model in models_data if 'name' in model]
+        
+        # Ako nema modela, vrati podrazumevani
+        if not models:
+            return [config.DEFAULT_LLM_MODEL]
+        return models
     except Exception as e:
-        st.error(f"Nije moguće povezati se sa Ollama: {e}. Proverite da li je Ollama instalirana i pokrenuta na {config.OLLAMA_HOST}. Ako nije, instalirajte je i pokrenite sa komandom 'ollama serve'.")
-        with open("app_log.txt", "a", encoding="utf-8") as log_file:
-            log_file.write(f"[ERROR] Nije moguće povezati se sa Ollama: {e}\n")
-        return []
+        st.error(f"Nije moguće povezati se sa Ollama: {e}")
+        return [config.DEFAULT_LLM_MODEL]
 
 def format_context(docs):
     """Formira tekstualni prikaz konteksta za prikaz u expanderu."""
@@ -70,21 +92,20 @@ with st.sidebar:
     
     # Dinamički izbor LLM modela
     available_models = get_ollama_models()
-    if available_models:
-        # Pokušavamo da nađemo podrazumevani model u listi, ako ne postoji, uzimamo prvi
-        try:
-            default_index = available_models.index(st.session_state.selected_llm)
-        except ValueError:
-            default_index = 0
-        
-        selected_llm = st.selectbox(
-            "Izaberite LLM Model:",
-            available_models,
-            index=default_index
-        )
-        st.session_state.selected_llm = selected_llm
-    else:
-        st.warning("Nema dostupnih Ollama modela. Proverite da li je Ollama pokrenuta.")
+    last_used_model = get_last_used_model()
+    
+    # Proveri da li je poslednji korišćeni model i dalje dostupan
+    if last_used_model not in available_models:
+        last_used_model = available_models[0] if available_models else config.DEFAULT_LLM_MODEL
+    
+    selected_llm = st.selectbox(
+        "Izaberite LLM Model:",
+        available_models,
+        index=available_models.index(last_used_model) if last_used_model in available_models else 0
+    )
+    st.session_state.selected_llm = selected_llm
+    else:        
+    st.warning("Nema dostupnih Ollama modela. Proverite da li je Ollama pokrenuta.")
 
     # Izbor uređaja
     selected_device = st.selectbox(
@@ -96,7 +117,7 @@ with st.sidebar:
 
     # Dugme za inicijalizaciju/re-inicijalizaciju agenta
     if st.button("Inicijalizuj Agenta", type="primary"):
-        with st.spinner(f"Inicijalizacija sa modelom '{st.session_state.selected_llm}' na '{st.session_state.selected_device.upper()}'..."):
+        with st.spinner(f"Inicijalizacija sa modelom '{st.session_state.selected_llm}'..."):
             try:
                 st.session_state.agent = RAGAgent(
                     llm_model=st.session_state.selected_llm,
@@ -104,6 +125,7 @@ with st.sidebar:
                     device=st.session_state.selected_device
                 )
                 st.success("Agent je uspešno inicijalizovan!", icon="✅")
+                save_last_used_model(st.session_state.selected_llm)  # Sačuvaj izabrani model
                 with open("app_log.txt", "a", encoding="utf-8") as log_file:
                     log_file.write(f"[INFO] Agent uspešno inicijalizovan sa modelom {st.session_state.selected_llm} na {st.session_state.selected_device}\n")
                 # Resetujemo chat pri promeni agenta
@@ -116,13 +138,14 @@ with st.sidebar:
 
     # Auto-start agenta ako nije inicijalizovan
     if st.session_state.agent is None and available_models:
-        with st.spinner(f"Automatska inicijalizacija sa modelom '{st.session_state.selected_llm}' na '{st.session_state.selected_device.upper()}'..."):
+        with st.spinner(f"Automatska inicijalizacija sa modelom '{last_used_model}'..."):
             try:
                 st.session_state.agent = RAGAgent(
-                    llm_model=st.session_state.selected_llm,
+                    llm_model=last_used_model,
                     embedding_model=config.DEFAULT_EMBEDDING_MODEL,
                     device=st.session_state.selected_device
                 )
+                st.session_state.selected_llm = last_used_model
                 st.success("Agent je automatski inicijalizovan!", icon="✅")
                 with open("app_log.txt", "a", encoding="utf-8") as log_file:
                     log_file.write(f"[INFO] Agent automatski inicijalizovan sa modelom {st.session_state.selected_llm} na {st.session_state.selected_device}\n")
