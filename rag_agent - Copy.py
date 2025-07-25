@@ -1,27 +1,19 @@
-# rag_agent.py (Finalna verzija bez upozorenja)
+# rag_agent.py
 
 import config
-# IZMENA: Uvozimo QdrantVectorStore umesto Qdrant
-from langchain_qdrant import QdrantVectorStore
+# from langchain_community.vectorstores import Qdrant
+# IZMENA: Uvozimo Qdrant iz novog paketa
+from langchain_qdrant import Qdrant
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
+# IZMENA: Uvozimo HuggingFaceEmbeddings iz novog paketa
 from langchain_huggingface import HuggingFaceEmbeddings
-# IZMENA: Uvozimo Ollama iz njenog novog, posebnog paketa
-from langchain_ollama import OllamaLLM
+from langchain_community.llms import Ollama
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+# IZMENA: Uvozimo QdrantClient da ga prosledimo direktno
 from qdrant_client import QdrantClient
-
-def format_docs(docs):
-    """Pomoćna funkcija za formatiranje konteksta i njegovo ispisivanje radi debugovanja."""
-    print("\n--- KONTEKST PROSLEDJEN MODELU ---")
-    if not docs:
-        print("!!! NIJE PRONAĐEN NIJEDAN RELEVANTAN DOKUMENT !!!")
-    for i, doc in enumerate(docs):
-        print(f"--- CHUNK {i+1} [Izvor: {doc.metadata.get('source_file', 'Nepoznat')}] ---")
-        print(doc.page_content)
-        print("-" * 20)
-    print("--- KRAJ KONTEKSTA ---\n")
-    return "\n\n".join(doc.page_content for doc in docs)
 
 class RAGAgent:
     """
@@ -30,25 +22,48 @@ class RAGAgent:
     def __init__(self):
         print("Inicijalizacija RAG Agenta...")
         
+        # 1. Inicijalizacija modela za embedovanje (BERT-oliki model)
+        # Ovaj model se izvršava lokalno i pretvara pitanja u vektore.
+        # self.embedding_model = HuggingFaceEmbeddings(
+        #     model_name=config.EMBEDDING_MODEL,
+        #     model_kwargs={'device': 'cpu'} # Možete promeniti u 'cuda' ako imate NVIDIA GPU
+        # )
+                # IZMENA: Koristimo HuggingFaceEmbeddings iz novog paketa
         self.embedding_model = HuggingFaceEmbeddings(
             model_name=config.EMBEDDING_MODEL,
             model_kwargs={'device': 'cpu'}
         )
         
+        # 2. Povezivanje na Qdrant bazu
+        # Koristimo postojeći Qdrant klijent i našu kolekciju.
+        # LangChain će koristiti embedding model da pretražuje bazu.
+        # IZMENA: Prvo kreiramo Qdrant klijenta...
         qdrant_client = QdrantClient(url=config.QDRANT_URL)
-        
-        # IZMENA: Koristimo novo ime klase QdrantVectorStore
-        self.vector_store = QdrantVectorStore(
+
+
+        # self.vector_store = Qdrant.from_existing_collection(
+        #     embedding=self.embedding_model,
+        #     collection_name=config.QDRANT_COLLECTION_NAME,
+        #     url=config.QDRANT_URL,
+        # )
+        # IZMENA: ...a zatim ga prosleđujemo LangChain Qdrant konstruktoru.
+        # Ovo je novi, ispravan način za povezivanje na Qdrant server.
+        self.vector_store = Qdrant(
             client=qdrant_client,
             collection_name=config.QDRANT_COLLECTION_NAME,
-            embedding=self.embedding_model,
+            embeddings=self.embedding_model,
         )
-        
+
+        # 3. Konfiguracija retriever-a
+        # Retriever je komponenta koja vrši pretragu u bazi.
+        # `k=5` znači da će vratiti 5 najrelevantnijih dokumenata (chunk-ova).
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 5})
         
-        # IZMENA: Inicijalizacija koristi Ollama klasu iz novog paketa
-        self.llm = OllamaLLM(model=config.BASE_LLM_MODEL)
+        # 4. Inicijalizacija LLM-a (YugoGPT) preko Ollama
+        self.llm = Ollama(model=config.BASE_LLM_MODEL)
         
+        # 5. Kreiranje Prompt Template-a
+        # Ovo je ključno za kontrolu ponašanja LLM-a.
         template = """
 Vi ste 'Drveni advokat', AI asistent specijalizovan za pravna pitanja u Srbiji. 
 Vaš zadatak je da odgovorite na pitanje korisnika isključivo na osnovu sledećeg konteksta iz pravnih dokumenata.
@@ -66,8 +81,10 @@ Konačan odgovor na srpskom jeziku:
 """
         self.prompt = PromptTemplate.from_template(template)
         
+        # 6. Sklapanje RAG lanca (chain)
+        # Ovo je sekvenca operacija koja definiše naš RAG proces.
         self.rag_chain = (
-            {"context": self.retriever | format_docs, "question": RunnablePassthrough()}
+            {"context": self.retriever, "question": RunnablePassthrough()}
             | self.prompt
             | self.llm
             | StrOutputParser()
@@ -82,23 +99,30 @@ Konačan odgovor na srpskom jeziku:
         return self.rag_chain.invoke(question)
 
 # --- Blok za testiranje ---
+# Ovo vam omogućava da testirate logiku direktno iz terminala
+# pre nego što napravimo Streamlit aplikaciju.
 if __name__ == '__main__':
+    # Provera da li je Ollama pokrenuta i da li YugoGPT postoji
     try:
         agent = RAGAgent()
+        
         print("\n--- Testiranje RAG Agenta ---")
         print("Unesite vaše pitanje (ili 'izlaz' za prekid).")
+        
         while True:
             user_question = input("Pitanje: ")
             if user_question.lower() == 'izlaz':
                 break
+            
             answer = agent.ask(user_question)
             print("\nOdgovor Agenta:")
             print(answer)
             print("-" * 50)
+
     except Exception as e:
         print("\n--- GREŠKA ---")
         print(f"Došlo je do greške pri inicijalizaciji agenta: {e}")
         print("\nMolimo vas proverite sledeće:")
         print("1. Da li je Qdrant Docker kontejner pokrenut?")
         print("2. Da li je Ollama instalirana i pokrenuta?")
-        print("3. Da li ste preuzeli YugoGPT model komandom: 'ollama run YugoGPT' ?")
+        print("3. Da li ste preuzeli YugoGPT model komandom: 'ollama run gordicaleksa/YugoGPT' ?")

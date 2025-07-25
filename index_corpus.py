@@ -16,20 +16,23 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # Podešavanje za logovanje
 logging.basicConfig(
     filename='indexing_log.txt',
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
 # --- KONFIGURACIJA ---
 # U realnom projektu, ovi parametri bi bili u config.py
 # Ime modela za embedovanje. 'all-MiniLM-L6-v2' je dobar i brz izbor.
-EMBEDDING_MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
-# Dimenzionalnost vektora za odabrani model. Za 'all-MiniLM-L6-v2' je 384.
-VECTOR_DIMENSION = 384
+# EMBEDDING_MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
+
+EMBEDDING_MODEL_NAME = 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2'
+# # Dimenzionalnost vektora za odabrani model. Za 'all-MiniLM-L6-v2' je 384.
+# VECTOR_DIMENSION = 384
+VECTOR_DIMENSION = 768
 # Metrika za poređenje vektora. Cosine je standard za tekstualne embedinge.
 DISTANCE_METRIC = models.Distance.COSINE
 # Veličina serije (batch) za unos u Qdrant.
-BATCH_SIZE = 128
+BATCH_SIZE = 64 # Smanjujemo batch size za debugovanje - bilo 128
 
 def setup_qdrant_collection(client: QdrantClient, collection_name: str):
     """Proverava da li kolekcija postoji i kreira je ako ne postoji koristeći moderniji pristup."""
@@ -48,6 +51,26 @@ def setup_qdrant_collection(client: QdrantClient, collection_name: str):
         # TODO: Dodati kreiranje indeksa za metapodatke ovde kada definišemo tačna polja za filtriranje
         # client.create_payload_index(collection_name=collection_name, field_name="metadata.court", field_schema="keyword")
 
+def process_batch(client, model, collection_name, points):
+    """Generiše embedinge za batch i unosi ga u Qdrant."""
+    texts_to_embed = [point.payload["page_content"] for point in points]
+    
+    # Generisanje embedinga za sve tekstove u batch-u odjednom (mnogo brže)
+    vectors = model.encode(texts_to_embed, show_progress_bar=False)
+    
+    # Dodavanje vektora u odgovarajuće tačke
+    for i, point in enumerate(points):
+        point.vector = vectors[i].tolist()
+        
+    # Unos (upsert) celog batch-a u Qdrant
+    client.upsert(
+        collection_name=collection_name,
+        points=points,
+        wait=False  # wait=False za brži unos, Qdrant obrađuje u pozadini
+    )
+    logging.info(f"Uspešno uneto {len(points)} tačaka u Qdrant.")
+
+    
 def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
     """Glavna funkcija za indeksiranje JSONL korpusa u Qdrant."""
 
@@ -114,24 +137,7 @@ def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
 
     print("\nIndeksiranje uspešno završeno.")
 
-def process_batch(client, model, collection_name, points):
-    """Generiše embedinge za batch i unosi ga u Qdrant."""
-    texts_to_embed = [point.payload["page_content"] for point in points]
-    
-    # Generisanje embedinga za sve tekstove u batch-u odjednom (mnogo brže)
-    vectors = model.encode(texts_to_embed, show_progress_bar=False)
-    
-    # Dodavanje vektora u odgovarajuće tačke
-    for i, point in enumerate(points):
-        point.vector = vectors[i].tolist()
-        
-    # Unos (upsert) celog batch-a u Qdrant
-    client.upsert(
-        collection_name=collection_name,
-        points=points,
-        wait=False  # wait=False za brži unos, Qdrant obrađuje u pozadini
-    )
-    logging.info(f"Uspešno uneto {len(points)} tačaka u Qdrant.")
+
 
 
 if __name__ == '__main__':
