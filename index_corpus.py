@@ -35,12 +35,10 @@ DISTANCE_METRIC = models.Distance.COSINE
 BATCH_SIZE = 64 # Smanjujemo batch size za debugovanje - bilo 128
 
 def setup_qdrant_collection(client: QdrantClient, collection_name: str):
-    """Proverava da li kolekcija postoji i kreira je ako ne postoji koristeći moderniji pristup."""
     try:
-        # collection_exists ne postoji u starijim verzijama, pa koristimo get_collection
         client.get_collection(collection_name=collection_name)
         logging.info(f"Kolekcija '{collection_name}' već postoji.")
-        print(f"Kolekcija '{collection_name}' već postoji, nastavlja se sa unosom.")
+        print(f"Kolekcija '{collection_name}' već postoji.")
     except Exception:
         logging.info(f"Kreiranje nove kolekcije: '{collection_name}'")
         print(f"Kreiranje nove kolekcije: '{collection_name}'")
@@ -52,90 +50,71 @@ def setup_qdrant_collection(client: QdrantClient, collection_name: str):
         # client.create_payload_index(collection_name=collection_name, field_name="metadata.court", field_schema="keyword")
 
 def process_batch(client, model, collection_name, points):
-    """Generiše embedinge za batch i unosi ga u Qdrant."""
+    if not points:
+        return 0
+    print(f"--> PROCESIRAM BATCH OD {len(points)} TAČAKA...")
     texts_to_embed = [point.payload["page_content"] for point in points]
-    
-    # Generisanje embedinga za sve tekstove u batch-u odjednom (mnogo brže)
-    vectors = model.encode(texts_to_embed, show_progress_bar=False)
-    
-    # Dodavanje vektora u odgovarajuće tačke
+    vectors = model.encode(texts_to_embed, show_progress_bar=True, batch_size=32)
     for i, point in enumerate(points):
         point.vector = vectors[i].tolist()
-        
-    # Unos (upsert) celog batch-a u Qdrant
-    client.upsert(
-        collection_name=collection_name,
-        points=points,
-        wait=False  # wait=False za brži unos, Qdrant obrađuje u pozadini
-    )
+    client.upsert(collection_name=collection_name, points=points, wait=True)
     logging.info(f"Uspešno uneto {len(points)} tačaka u Qdrant.")
+    print(f"--> BATCH USPEŠNO UNET.")
+    return len(points)
 
     
 def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
-    """Glavna funkcija za indeksiranje JSONL korpusa u Qdrant."""
-
-    # 1. Inicijalizacija klijenata i modela
     print("Inicijalizacija klijenata i modela...")
     qdrant_client = QdrantClient(url=qdrant_url)
     embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
-        length_function=len,
-    )
-    logging.info("Klijenti i modeli uspešno inicijalizovani.")
-
-    # 2. Postavljanje Qdrant kolekcije
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     setup_qdrant_collection(qdrant_client, collection_name)
 
-    # 3. Čitanje i obrada JSONL fajla
     print(f"Čitanje i obrada fajla: {jsonl_path}")
     
     points_batch = []
+    total_points_processed = 0
 
     with open(jsonl_path, 'r', encoding='utf-8') as f:
-        for line in tqdm(f, desc="Indeksiranje dokumenata"):
+        lines = f.readlines()
+        print(f"Pronađeno ukupno {len(lines)} dokumenata (linija) u fajlu.")
+
+        for i, line in enumerate(tqdm(lines, desc="Indeksiranje dokumenata")):
             try:
                 doc = json.loads(line)
-                
-                # Preskačemo dokumente bez teksta
-                if not doc.get('full_text'):
-                    logging.warning(f"Preskočen dokument bez teksta: {doc.get('source_file')}")
+                if not doc.get('full_text', '').strip():
+                    if i < 5: print(f"  - Preskačem dokument {i} jer nema tekst.")
                     continue
-
-                # Deljenje teksta na manje delove (chunks)
-                chunks = text_splitter.split_text(doc['full_text'])
                 
-                # Kreiranje tačaka (points) za svaki chunk
+                # Debug ispis za prvih 5 dokumenata
+                if i < 5: print(f"Obradjujem dokument {i}: {doc.get('source_file')}")
+                
+                chunks = text_splitter.split_text(doc['full_text'])
+                if i < 5: print(f"  - Broj chunk-ova: {len(chunks)}")
+
                 for chunk_text in chunks:
-                    # Svaka tačka dobija jedinstveni ID
                     point_id = str(uuid.uuid4())
-                    
-                    # Payload sadrži sam tekst i sve metapodatke od roditeljskog dokumenta
                     payload = {
                         "page_content": chunk_text,
                         "metadata": doc.get("metadata", {}),
                         "source_file": doc.get("source_file", "")
                     }
-                    
-                    # Pripremamo tačku bez vektora za sada
-                    points_batch.append(models.PointStruct(id=point_id, payload=payload, vector=None))
-
-                # Kada batch dostigne definisanu veličinu, obrađujemo ga
+                    points_batch.append(models.PointStruct(id=point_id, payload=payload))
+                
                 if len(points_batch) >= BATCH_SIZE:
-                    process_batch(qdrant_client, embedding_model, collection_name, points_batch)
-                    points_batch = [] # Resetujemo batch
+                    processed_count = process_batch(qdrant_client, embedding_model, collection_name, points_batch)
+                    total_points_processed += processed_count
+                    points_batch = []
 
-            except json.JSONDecodeError:
-                logging.error(f"Greška pri parsiranju reda: {line.strip()}")
             except Exception as e:
-                logging.error(f"Neočekivana greška: {e}")
+                logging.error(f"Greška pri obradi linije {i}: {line.strip()} - Greška: {e}")
 
-    # Obrada preostalih tačaka u poslednjem batch-u
     if points_batch:
-        process_batch(qdrant_client, embedding_model, collection_name, points_batch)
-
-    print("\nIndeksiranje uspešno završeno.")
+        processed_count = process_batch(qdrant_client, embedding_model, collection_name, points_batch)
+        total_points_processed += processed_count
+    
+    print(f"\nIndeksiranje (trebalo bi da je) završeno.")
+    print(f"Ukupno obrađeno i uneto tačaka (chunk-ova): {total_points_processed}")
 
 
 
