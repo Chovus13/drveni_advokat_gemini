@@ -12,7 +12,7 @@ FEEDBACK_LOG_PATH = r"data/feedback_log.jsonl"
 
 # --- Konfiguracija Modela i Uređaja ---
 # Podrazumevane vrednosti koje će biti ponuđene u aplikaciji
-DEFAULT_LLM_MODEL = "YugoGPT"  # Promenite na "YugoGPT" ako želite koristiti taj model
+DEFAULT_LLM_MODEL = "mistral:7b"  # Promenite na "YugoGPT" ako želite koristiti taj model
 DEFAULT_EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
 DEFAULT_DEVICE = "cuda" #####ili cuda za NVIDIA GPU
 
