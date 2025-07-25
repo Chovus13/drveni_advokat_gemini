@@ -19,7 +19,9 @@ def get_ollama_models():
         # Filtriramo samo modele koji imaju 'name' ključ da bismo izbegli greške
         return [model['name'] for model in models_data if 'name' in model]
     except Exception as e:
-        st.error(f"Nije moguće povezati se sa Ollama: {e}")
+        st.error(f"Nije moguće povezati se sa Ollama: {e}. Proverite da li je Ollama instalirana i pokrenuta na {config.OLLAMA_HOST}. Ako nije, instalirajte je i pokrenite sa komandom 'ollama serve'.")
+        with open("app_log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(f"[ERROR] Nije moguće povezati se sa Ollama: {e}\n")
         return []
 
 def format_context(docs):
@@ -41,7 +43,19 @@ st.set_page_config(page_title="Drveni Advokat", layout="wide")
 if 'agent' not in st.session_state:
     st.session_state.agent = None
 if "messages" not in st.session_state:
-    st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Molim vas odaberite podešavanja u meniju sa leve strane i kliknite na 'Inicijalizuj Agenta'."}]
+    import json
+    import os
+    chat_history_file = "chat_history.json"
+    if os.path.exists(chat_history_file):
+        try:
+            with open(chat_history_file, "r", encoding="utf-8") as f:
+                st.session_state.messages = json.load(f)
+        except Exception as e:
+            st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Došlo je do greške pri učitavanju istorije razgovora. Počinjemo novi razgovor."}]
+            with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                log_file.write(f"[ERROR] Greška pri učitavanju istorije razgovora: {e}\n")
+    else:
+        st.session_state.messages = [{"role": "assistant", "content": "Dobar dan! Molim vas odaberite podešavanja u meniju sa leve strane i kliknite na 'Inicijalizuj Agenta'."}]
 if "selected_llm" not in st.session_state:
     st.session_state.selected_llm = config.DEFAULT_LLM_MODEL
 if "selected_device" not in st.session_state:
@@ -90,11 +104,35 @@ with st.sidebar:
                     device=st.session_state.selected_device
                 )
                 st.success("Agent je uspešno inicijalizovan!", icon="✅")
+                with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                    log_file.write(f"[INFO] Agent uspešno inicijalizovan sa modelom {st.session_state.selected_llm} na {st.session_state.selected_device}\n")
                 # Resetujemo chat pri promeni agenta
                 st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman. Kako vam mogu pomoći?"}]
                 st.rerun() # Ponovo pokrećemo skriptu da se osveži interfejs
             except Exception as e:
                 st.error(f"Greška pri inicijalizaciji: {e}", icon="🔥")
+                with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                    log_file.write(f"[ERROR] Greška pri inicijalizaciji agenta: {e}\n")
+
+    # Auto-start agenta ako nije inicijalizovan
+    if st.session_state.agent is None and available_models:
+        with st.spinner(f"Automatska inicijalizacija sa modelom '{st.session_state.selected_llm}' na '{st.session_state.selected_device.upper()}'..."):
+            try:
+                st.session_state.agent = RAGAgent(
+                    llm_model=st.session_state.selected_llm,
+                    embedding_model=config.DEFAULT_EMBEDDING_MODEL,
+                    device=st.session_state.selected_device
+                )
+                st.success("Agent je automatski inicijalizovan!", icon="✅")
+                with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                    log_file.write(f"[INFO] Agent automatski inicijalizovan sa modelom {st.session_state.selected_llm} na {st.session_state.selected_device}\n")
+                st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman. Kako vam mogu pomoći?"}]
+                st.rerun()
+            except Exception as e:
+                st.error(f"Greška pri automatskoj inicijalizaciji: {e}", icon="🔥")
+                with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                    log_file.write(f"[ERROR] Greška pri automatskoj inicijalizaciji agenta: {e}\n")
+                st.session_state.agent = None
 
     st.markdown("---")
     st.subheader("Status Sistema")
@@ -153,6 +191,16 @@ if prompt := st.chat_input("Postavite vaše pitanje..."):
                         "content": full_response,
                         "context": source_docs
                     })
+                    # Snimamo istoriju razgovora u lokalni fajl
+                    import json
+                    try:
+                        with open("chat_history.json", "w", encoding="utf-8") as f:
+                            json.dump(st.session_state.messages, f, ensure_ascii=False, indent=2)
+                        with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                            log_file.write(f"[INFO] Istorija razgovora snimljena u chat_history.json\n")
+                    except Exception as e:
+                        with open("app_log.txt", "a", encoding="utf-8") as log_file:
+                            log_file.write(f"[ERROR] Greška pri snimanju istorije razgovora: {e}\n")
 
                 except Exception as e:
                     st.error(f"Došlo je do greške: {e}", icon="🔥")

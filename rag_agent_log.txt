@@ -1,0 +1,4 @@
+[INFO] Inicijalizacija RAG Agenta sa LLM: mistral:7b, Embedding: sentence-transformers/paraphrase-multilingual-mpnet-base-v2, Uređaj: cuda
+[INFO] OllamaLLM uspešno inicijalizovan sa modelom mistral:7b
+[INFO] Stream pitanje: zadnji put slucaj sa Tot Silvesterom?
+[INFO] Kontekst dobijen za stream pitanje: zadnji put slucaj sa Tot Silvesterom?

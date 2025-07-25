@@ -21,6 +21,8 @@ class RAGAgent:
     """
     def __init__(self, llm_model: str, embedding_model: str, device: str):
         print(f"Inicijalizacija RAG Agenta sa LLM: {llm_model}, Embedding: {embedding_model}, Uređaj: {device}")
+        with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(f"[INFO] Inicijalizacija RAG Agenta sa LLM: {llm_model}, Embedding: {embedding_model}, Uređaj: {device}\n")
         
         self.embedding_model = HuggingFaceEmbeddings(
             model_name=embedding_model,
@@ -37,8 +39,15 @@ class RAGAgent:
         
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 5})
         
-        self.llm = OllamaLLM(model=config.DEFAULT_LLM_MODEL, host=config.OLLAMA_HOST)
-#         self.llm = OllamaLLM(model=config.BASE_LLM_MODEL)
+        try:
+            self.llm = OllamaLLM(model=llm_model, host=config.OLLAMA_HOST)
+            with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+                log_file.write(f"[INFO] OllamaLLM uspešno inicijalizovan sa modelom {llm_model}\n")
+        except Exception as e:
+            error_msg = f"Greška pri inicijalizaciji OllamaLLM: {e}"
+            with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+                log_file.write(f"[ERROR] {error_msg}\n")
+            raise Exception(error_msg)
         
         template = """
 Vi ste 'Drveni advokat', AI asistent specijalizovan za pravna pitanja u Srbiji. 
@@ -73,7 +82,11 @@ Izvori:
         Prima pitanje korisnika i vraća rečnik sa odgovorom i kontekstom.
         """
         print(f"Postavljeno pitanje: {question}")
+        with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(f"[INFO] Postavljeno pitanje: {question}\n")
         result = self.rag_chain.invoke(question)
+        with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(f"[INFO] Odgovor generisan za pitanje: {question}\n")
         
         # Formatiramo kontekst za lepši prikaz
         context_docs = result.get('context', [])
@@ -94,6 +107,8 @@ Izvori:
         """
         Prima pitanje i vraća generator za strimovanje odgovora.
         """
+        with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(f"[INFO] Stream pitanje: {question}\n")
         # Prvo dobijamo kontekst
         retrieved_docs = self.retriever.invoke(question)
         source_files = {doc.metadata.get('source_file', 'Nepoznat') for doc in retrieved_docs}
@@ -106,6 +121,8 @@ Izvori:
         )
         
         # Vraćamo generator i izvore
+        with open("rag_agent_log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(f"[INFO] Kontekst dobijen za stream pitanje: {question}\n")
         return generation_chain.stream({"context": retrieved_docs, "question": question}), source_files
     
 # # rag_agent.py (Finalna verzija bez upozorenja)
