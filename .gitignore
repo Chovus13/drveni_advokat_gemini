@@ -3,3 +3,8 @@
 /docs
 /coverted_docs
 /data
+/qdrant_data
+/-konvertovani-PART2
+*.pyc
+indexing_log.txt
+extraction_log.txt

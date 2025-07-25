@@ -32,15 +32,16 @@ DISTANCE_METRIC = models.Distance.COSINE
 BATCH_SIZE = 128
 
 def setup_qdrant_collection(client: QdrantClient, collection_name: str):
-    """Proverava da li kolekcija postoji i kreira je ako ne postoji."""
+    """Proverava da li kolekcija postoji i kreira je ako ne postoji koristeći moderniji pristup."""
     try:
+        # collection_exists ne postoji u starijim verzijama, pa koristimo get_collection
         client.get_collection(collection_name=collection_name)
         logging.info(f"Kolekcija '{collection_name}' već postoji.")
         print(f"Kolekcija '{collection_name}' već postoji, nastavlja se sa unosom.")
     except Exception:
         logging.info(f"Kreiranje nove kolekcije: '{collection_name}'")
         print(f"Kreiranje nove kolekcije: '{collection_name}'")
-        client.recreate_collection(
+        client.create_collection(
             collection_name=collection_name,
             vectors_config=models.VectorParams(size=VECTOR_DIMENSION, distance=DISTANCE_METRIC),
         )
