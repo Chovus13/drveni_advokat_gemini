@@ -32,7 +32,7 @@ class RAGAgent:
         self.vector_store = QdrantVectorStore(
             client=qdrant_client,
             collection_name=config.QDRANT_COLLECTION_NAME,
-            embeddings=self.embedding_model,
+            embedding=self.embedding_model,
         )
         
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 5})
