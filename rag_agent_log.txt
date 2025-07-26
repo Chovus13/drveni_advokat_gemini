@@ -1236,3 +1236,235 @@ b'{"status":{"error":"Service internal error: 1 of 1 read operations failed:\\n 
 2025-07-26 08:25:52,109 - ERROR - Greška pri generisanju odgovora: Unexpected Response: 500 (Internal Server Error)
 Raw response content:
 b'{"status":{"error":"Service internal error: 1 of 1 read operations failed:\\n  Service internal error: task 85 panicked with message \\"called `Result::unwrap()` on an `Err` value: OutputTooSmall { e ...'
+2025-07-26 08:52:08,101 - ERROR - Greška pri u\u010ditavanju chat istorije: Expecting value: line 1 column 1 (char 0)
+2025-07-26 08:52:08,101 - ERROR - Greška pri u\u010ditavanju chat istorije: Expecting value: line 1 column 1 (char 0)
+2025-07-26 08:52:08,102 - ERROR - Greška pri u\u010ditavanju chat istorije: Expecting value: line 1 column 1 (char 0)
+2025-07-26 08:52:08,108 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:52:08,109 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:52:08,518 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:52:08,939 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:52:08,940 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:52:08,944 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C28814D70>
+2025-07-26 08:52:08,944 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C2872F110>
+2025-07-26 08:52:08,945 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:52:08,945 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:52:08,946 - DEBUG - send_request_headers.complete
+2025-07-26 08:52:08,946 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:52:08,946 - DEBUG - send_request_body.complete
+2025-07-26 08:52:08,946 - DEBUG - send_request_headers.complete
+2025-07-26 08:52:08,946 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:52:08,946 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:52:08,946 - DEBUG - send_request_body.complete
+2025-07-26 08:52:08,947 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:52:08,949 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:52:08 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:52:08,949 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:52:08 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:52:08,950 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:52:08,950 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:52:08,950 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:52:08,950 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:52:08,950 - DEBUG - receive_response_body.complete
+2025-07-26 08:52:08,950 - DEBUG - receive_response_body.complete
+2025-07-26 08:52:08,950 - DEBUG - response_closed.started
+2025-07-26 08:52:08,951 - DEBUG - response_closed.started
+2025-07-26 08:52:08,951 - DEBUG - response_closed.complete
+2025-07-26 08:52:08,951 - DEBUG - response_closed.complete
+2025-07-26 08:52:08,951 - INFO - Dostupni modeli: []
+2025-07-26 08:52:08,951 - INFO - Dostupni modeli: []
+2025-07-26 08:52:09,293 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:52:09,294 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C2872F750>
+2025-07-26 08:52:09,294 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:52:09,295 - DEBUG - send_request_headers.complete
+2025-07-26 08:52:09,295 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:52:09,295 - DEBUG - send_request_body.complete
+2025-07-26 08:52:09,296 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:52:09,302 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:52:09 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:52:09,303 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:52:09,303 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:52:09,303 - DEBUG - receive_response_body.complete
+2025-07-26 08:52:09,303 - DEBUG - response_closed.started
+2025-07-26 08:52:09,304 - DEBUG - response_closed.complete
+2025-07-26 08:52:09,304 - INFO - Dostupni modeli: []
+2025-07-26 08:53:40,085 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:53:40,775 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:53:40,776 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C2884D350>
+2025-07-26 08:53:40,776 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:53:40,776 - DEBUG - send_request_headers.complete
+2025-07-26 08:53:40,776 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:53:40,776 - DEBUG - send_request_body.complete
+2025-07-26 08:53:40,776 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:53:40,780 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:53:40 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:53:40,780 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:53:40,780 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:53:40,780 - DEBUG - receive_response_body.complete
+2025-07-26 08:53:40,780 - DEBUG - response_closed.started
+2025-07-26 08:53:40,780 - DEBUG - response_closed.complete
+2025-07-26 08:53:40,781 - INFO - Dostupni modeli: []
+2025-07-26 08:53:40,783 - INFO - Pokušaj inicijalizacije agenta sa modelom mistral:7b na cuda
+2025-07-26 08:53:40,783 - INFO - Inicijalizacija RAG Agenta sa LLM: mistral:7b, Embedding: sentence-transformers/paraphrase-multilingual-mpnet-base-v2, Ure\u0111aj: cuda
+2025-07-26 08:53:52,372 - INFO - Load pretrained SentenceTransformer: sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+2025-07-26 08:53:52,375 - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-07-26 08:53:52,588 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-07-26 08:53:52,620 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/modules.json HTTP/1.1" 200 0
+2025-07-26 08:53:52,785 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-07-26 08:53:52,817 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-07-26 08:53:52,959 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-07-26 08:53:52,983 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-07-26 08:53:53,129 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/README.md HTTP/1.1" 307 0
+2025-07-26 08:53:53,154 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/README.md HTTP/1.1" 200 0
+2025-07-26 08:53:53,295 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-07-26 08:53:53,322 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/modules.json HTTP/1.1" 200 0
+2025-07-26 08:53:53,463 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/sentence_bert_config.json HTTP/1.1" 307 0
+2025-07-26 08:53:53,486 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/sentence_bert_config.json HTTP/1.1" 200 0
+2025-07-26 08:53:53,626 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/adapter_config.json HTTP/1.1" 404 0
+2025-07-26 08:53:53,766 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/config.json HTTP/1.1" 307 0
+2025-07-26 08:53:53,790 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/config.json HTTP/1.1" 200 0
+2025-07-26 08:53:55,861 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2025-07-26 08:53:55,885 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/tokenizer_config.json HTTP/1.1" 200 0
+2025-07-26 08:53:56,031 - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-07-26 08:53:57,090 - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/paraphrase-multilingual-mpnet-base-v2/resolve/main/1_Pooling/config.json HTTP/1.1" 307 0
+2025-07-26 08:53:57,114 - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2/84fccfe766bcfd679e39efefe4ebf45af190ad2d/1_Pooling%2Fconfig.json HTTP/1.1" 200 0
+2025-07-26 08:53:57,258 - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/paraphrase-multilingual-mpnet-base-v2 HTTP/1.1" 200 6343
+2025-07-26 08:53:58,738 - INFO - Embedding model uspešno inicijalizovan.
+2025-07-26 08:54:00,100 - DEBUG - connect_tcp.started host='localhost' port=6333 local_address=None timeout=5.0 socket_options=None
+2025-07-26 08:54:00,101 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C4CDE3CE0>
+2025-07-26 08:54:00,101 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:00,102 - DEBUG - send_request_headers.complete
+2025-07-26 08:54:00,102 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:54:00,102 - DEBUG - send_request_body.complete
+2025-07-26 08:54:00,102 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:00,118 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'transfer-encoding', b'chunked'), (b'content-encoding', b'br'), (b'content-type', b'application/json'), (b'vary', b'accept-encoding, Origin, Access-Control-Request-Method, Access-Control-Request-Headers'), (b'date', b'Sat, 26 Jul 2025 06:53:59 GMT')])
+2025-07-26 08:54:00,118 - INFO - HTTP Request: GET http://localhost:6333 "HTTP/1.1 200 OK"
+2025-07-26 08:54:00,118 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:54:00,118 - DEBUG - receive_response_body.complete
+2025-07-26 08:54:00,119 - DEBUG - response_closed.started
+2025-07-26 08:54:00,119 - DEBUG - response_closed.complete
+2025-07-26 08:54:00,119 - DEBUG - close.started
+2025-07-26 08:54:00,119 - DEBUG - close.complete
+2025-07-26 08:54:00,119 - INFO - Qdrant klijent uspešno povezan.
+2025-07-26 08:54:00,120 - DEBUG - connect_tcp.started host='localhost' port=6333 local_address=None timeout=5.0 socket_options=None
+2025-07-26 08:54:00,121 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C4CE6AF90>
+2025-07-26 08:54:00,121 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:00,122 - DEBUG - send_request_headers.complete
+2025-07-26 08:54:00,122 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:54:00,122 - DEBUG - send_request_body.complete
+2025-07-26 08:54:00,122 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:00,144 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'transfer-encoding', b'chunked'), (b'vary', b'accept-encoding, Origin, Access-Control-Request-Method, Access-Control-Request-Headers'), (b'content-encoding', b'br'), (b'content-type', b'application/json'), (b'date', b'Sat, 26 Jul 2025 06:53:59 GMT')])
+2025-07-26 08:54:00,145 - INFO - HTTP Request: GET http://localhost:6333/collections/drveni_advokat "HTTP/1.1 200 OK"
+2025-07-26 08:54:00,145 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:54:00,145 - DEBUG - receive_response_body.complete
+2025-07-26 08:54:00,145 - DEBUG - response_closed.started
+2025-07-26 08:54:00,145 - DEBUG - response_closed.complete
+2025-07-26 08:54:00,145 - DEBUG - close.started
+2025-07-26 08:54:00,145 - DEBUG - close.complete
+2025-07-26 08:54:00,448 - INFO - Vector store uspešno inicijalizovan.
+2025-07-26 08:54:01,684 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:54:01,685 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C52200270>
+2025-07-26 08:54:01,685 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2025-07-26 08:54:01,685 - DEBUG - send_request_headers.complete
+2025-07-26 08:54:01,685 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2025-07-26 08:54:01,686 - DEBUG - send_request_body.complete
+2025-07-26 08:54:01,686 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2025-07-26 08:54:05,556 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 26 Jul 2025 06:54:05 GMT'), (b'Transfer-Encoding', b'chunked')])
+2025-07-26 08:54:05,557 - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-07-26 08:54:05,557 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2025-07-26 08:54:10,056 - DEBUG - receive_response_body.complete
+2025-07-26 08:54:10,056 - DEBUG - response_closed.started
+2025-07-26 08:54:10,056 - DEBUG - response_closed.complete
+2025-07-26 08:54:10,057 - INFO - OllamaLLM uspešno inicijalizovan i testiran sa modelom mistral:7b. Test odgovor:  Hallo! Wie geht es Ihnen? Ist dies Ihre erste Interaktion mit mir oder haben wir uns bereits kennengelernt? Ich bin hier, um dir zu helfen, bei Fragen zur Programmierung und Computertechnologie.
+
+Welche Themen möchtest du gerne besprechen? Haben Sie ein Projekt, das ich unterstützen kann, oder haben wir eine bestimmte Aufgabe, die ich lösen soll? Ich bin hier, um dir dabei zu helfen, auch wenn es sich nur um allgemeine Fragen und Tips handelt. Wie kann ich Ihnen helfen?
+2025-07-26 08:54:10,057 - INFO - RAG lanac uspešno inicijalizovan.
+2025-07-26 08:54:10,059 - INFO - Agent uspešno inicijalizovan.
+2025-07-26 08:54:10,350 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:54:11,060 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:54:11,061 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C52200C00>
+2025-07-26 08:54:11,061 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:11,062 - DEBUG - send_request_headers.complete
+2025-07-26 08:54:11,062 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:54:11,062 - DEBUG - send_request_body.complete
+2025-07-26 08:54:11,062 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:11,065 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:54:11 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:54:11,065 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:54:11,065 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:54:11,065 - DEBUG - receive_response_body.complete
+2025-07-26 08:54:11,065 - DEBUG - response_closed.started
+2025-07-26 08:54:11,065 - DEBUG - response_closed.complete
+2025-07-26 08:54:11,066 - INFO - Dostupni modeli: []
+2025-07-26 08:54:57,400 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:54:57,994 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:54:57,995 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C4CF12250>
+2025-07-26 08:54:57,995 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:57,996 - DEBUG - send_request_headers.complete
+2025-07-26 08:54:57,996 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:54:57,996 - DEBUG - send_request_body.complete
+2025-07-26 08:54:57,996 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:54:58,000 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:54:57 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:54:58,000 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:54:58,000 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:54:58,000 - DEBUG - receive_response_body.complete
+2025-07-26 08:54:58,000 - DEBUG - response_closed.started
+2025-07-26 08:54:58,001 - DEBUG - response_closed.complete
+2025-07-26 08:54:58,001 - INFO - Dostupni modeli: []
+2025-07-26 08:54:58,026 - INFO - \u010cuvanje konfiguracije.
+2025-07-26 08:55:02,530 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:55:03,139 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:55:03,140 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C4CF12850>
+2025-07-26 08:55:03,140 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:03,140 - DEBUG - send_request_headers.complete
+2025-07-26 08:55:03,141 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:55:03,141 - DEBUG - send_request_body.complete
+2025-07-26 08:55:03,141 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:03,145 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:55:03 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:55:03,145 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:55:03,145 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:55:03,146 - DEBUG - receive_response_body.complete
+2025-07-26 08:55:03,146 - DEBUG - response_closed.started
+2025-07-26 08:55:03,146 - DEBUG - response_closed.complete
+2025-07-26 08:55:03,146 - INFO - Dostupni modeli: []
+2025-07-26 08:55:03,174 - INFO - \u010cuvanje konfiguracije.
+2025-07-26 08:55:09,008 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:55:09,250 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:55:09,731 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:55:09,732 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C5222A120>
+2025-07-26 08:55:09,733 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:09,733 - DEBUG - send_request_headers.complete
+2025-07-26 08:55:09,733 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:55:09,733 - DEBUG - send_request_body.complete
+2025-07-26 08:55:09,733 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:09,740 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:55:09 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:55:09,740 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:55:09,740 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:55:09,741 - DEBUG - receive_response_body.complete
+2025-07-26 08:55:09,741 - DEBUG - response_closed.started
+2025-07-26 08:55:09,741 - DEBUG - response_closed.complete
+2025-07-26 08:55:09,741 - INFO - Dostupni modeli: []
+2025-07-26 08:55:10,096 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:55:10,097 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C522288C0>
+2025-07-26 08:55:10,097 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:10,098 - DEBUG - send_request_headers.complete
+2025-07-26 08:55:10,098 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:55:10,098 - DEBUG - send_request_body.complete
+2025-07-26 08:55:10,098 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:10,108 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:55:10 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:55:10,109 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:55:10,109 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:55:10,109 - DEBUG - receive_response_body.complete
+2025-07-26 08:55:10,109 - DEBUG - response_closed.started
+2025-07-26 08:55:10,109 - DEBUG - response_closed.complete
+2025-07-26 08:55:10,110 - INFO - Dostupni modeli: []
+2025-07-26 08:55:11,626 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 08:55:12,373 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 08:55:12,375 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000026C52151630>
+2025-07-26 08:55:12,375 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:12,375 - DEBUG - send_request_headers.complete
+2025-07-26 08:55:12,376 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 08:55:12,376 - DEBUG - send_request_body.complete
+2025-07-26 08:55:12,376 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 08:55:12,378 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 06:55:12 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 08:55:12,379 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 08:55:12,379 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 08:55:12,379 - DEBUG - receive_response_body.complete
+2025-07-26 08:55:12,379 - DEBUG - response_closed.started
+2025-07-26 08:55:12,379 - DEBUG - response_closed.complete
+2025-07-26 08:55:12,380 - INFO - Dostupni modeli: []
+2025-07-26 08:55:12,400 - INFO - \u010cuvanje konfiguracije.

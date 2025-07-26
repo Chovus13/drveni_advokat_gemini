@@ -99,7 +99,8 @@ if "selected_llm" not in st.session_state:
 if "selected_device" not in st.session_state:
     st.session_state.selected_device = config.DEFAULT_DEVICE
 if "config_data" not in st.session_state:
-    st.session_state.config_data = {k: v for k, v in vars(config).items() if not k.startswith('__')}
+    with open('dynamic_config.json', 'r', encoding='utf-8') as f:
+        st.session_state.config_data = json.load(f)
 if "show_chunks" not in st.session_state:
     st.session_state.show_chunks = False
 if "chunk_size" not in st.session_state:
