@@ -1,7 +1,6 @@
 # index_corpus.py (FINALNA I ISPRAVLJENA VERZIJA)
 
 import os
-from config import DEFAULT_EMBEDDING_MODEL, VECTOR_DIMENSION, DISTANCE_METRIC, BATCH_SIZE, DEFAULT_DEVICE
 import json
 import argparse
 import uuid
@@ -13,10 +12,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # --- Konfiguracija ---
 logging.basicConfig(filename='indexing_log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-# EMBEDDING_MODEL_NAME = 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2'
-# VECTOR_DIMENSION = config.VECTOR_DIMENSION
-# DISTANCE_METRIC = models.Distance.COSINE
-#B ATCH_SIZE = config.BATCH_SIZE # Manji batch size za bolju kontrolu memorije
+EMBEDDING_MODEL_NAME = 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2'
+VECTOR_DIMENSION = 768
+DISTANCE_METRIC = models.Distance.COSINE
+BATCH_SIZE = 32 # Manji batch size za bolju kontrolu memorije
 
 def setup_qdrant_collection(client: QdrantClient, collection_name: str):
     """Proverava i kreira Qdrant kolekciju."""
@@ -36,10 +35,7 @@ def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
     # --- Inicijalizacija ---
     print("Inicijalizacija klijenata i modela...")
     qdrant_client = QdrantClient(url=qdrant_url)
-    embedding_model = SentenceTransformer(
-        DEFAULT_EMBEDDING_MODEL,
-        device=DEFAULT_DEVICE
-        )
+    embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     setup_qdrant_collection(qdrant_client, collection_name)
     

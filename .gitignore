@@ -8,3 +8,5 @@
 *.pyc
 indexing_log.txt
 extraction_log.txt
+*.dot
+*.DOT
