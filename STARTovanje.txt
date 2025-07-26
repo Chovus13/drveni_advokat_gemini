@@ -1,0 +1,23 @@
+
+
+
+
+ollama serve - ollama run mistral:7b
+docker run -p 6333:6333 -v i:/drveni_advokat_gemini/qdrant_data:/qdrant/storage qdrant/qdrant
+
+python rag_agent.python
+
+streamlit run app.python
+
+
+python manage_qdrant.py delete drveni_advokat
+
+python manage_qdrant.py info drveni_advokat
+
+python extract_and_structure.py "I:\drveni_advokat_gemini\converted_docs" "data/structured_corpus.jsonl"
+
+python index_corpus.py "data/structured_corpus.jsonl"
+
+
+Retrying in 1s [Retry 1/5].
+HTTP Error 429 thrown while requesting HEAD https://huggingface.co/Nerys/BERTic-zero-shot/resolve/main/config.json

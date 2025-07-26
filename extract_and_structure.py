@@ -10,6 +10,17 @@ import logging
 import ftfy
 import config
 from transformers import pipeline
+from simpletransformers.ner import NERModel, NERArgs
+
+# Postavi putanju do lokalnog foldera sa modelom
+model_path = "./bcms-bertic-ner"  # (folder gde si smestio preuzete fajlove)
+
+# Definiši label redosled (bitan za ovaj model!)
+model_args = NERArgs()
+model_args.labels_list = ['B-LOC','B-MISC','B-ORG','B-PER','I-LOC','I-MISC','I-ORG','I-PER','O']
+
+# Učitaj model sa lokalne putanje
+model = NERModel('electra', model_path, args=model_args)
 
 logging.basicConfig(
     filename='extraction_log.txt',
@@ -139,6 +150,7 @@ def extract_metadata_from_text(text: str) -> dict:
     # Dodaj zero-shot BERT za automatsku ekstrakciju (koristi srpski BERTić ili sličan)
     try:
         classifier = pipeline("zero-shot-classification", model="Nerys/BERTic-zero-shot")
+        # classifier = pipeline("zero-shot-classification", model="classla/bcms-bertic-ner")
         candidate_labels = list(config.METADATA_CATEGORIES.keys()) + ["Nepoznato"]
         results = classifier(text[:512], candidate_labels)  # Ograniči na prvih 512 tokena
         if results['labels'][0] != "Nepoznato":

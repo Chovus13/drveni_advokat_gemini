@@ -28,51 +28,58 @@
         "Stranke": {
             "TUŽILAC": [
                 "Državno tužilaštvo",
-                "TUŽILAC:",
+                "JP Elektrodistribucija",
                 "Poreska uprava"
             ],
             "TUŽENI": [
-                "TUŽENI:"
+                "Grad Beograd",
+                "Marko Nikolić",
+                "DOO 'Sunce'",
+                "Ana Marković"
             ],
             "OKRIVLJENI": [
-                "OKRIVLJENI:"
+                "Ivan Stojanović (okrivljen za krađu)",
+                "N.N. osoba"
             ],
             "OPTUŽENI": [
-                "OPTUŽENI:"
+                "Janko Janković (optužen za prevara)",
+                "Kompanija 'XYZ' (optužena za utaju poreza)"
             ],
             "OSUMNJIČENI": [
-                "OSUMNJIČENI:"
+                "Petar Perić (osumnjičen za ubistvo)",
+                "Nenad Nenadić"
             ],
             "PRODAVAC": [
-                "PRODAVAC:"
+                "DOO 'Auto Plaz'",
+                "Marija Marić"
             ],
             "KUPAC": [
-                "KUPAC:"
+                "Nikola Nikolić",
+                "DOO 'Gradnja Plus'"
             ],
             "STRANKA": [
-                "STRANKA:"
+                "Udruženje 'Zaštita prirode'",
+                "JP 'Vode Vojvodine'"
             ],
             "PORESKI OBVEZNIK": [
-                "PORESKI OBVEZNIK:"
+                "DOO 'IT Solutions'",
+                "Sara Sarač"
             ]
         },
         "Dokumenti": {
             "TUŽBA": [
-                "T U Ž B A",
+                "Tužba br. 123/2024",
                 "Privredna tužba protiv DOO 'Zvezda'"
             ],
             "OPOMENA": [
-                "O P O M E N A",
                 "Opomena za neplaćanje",
                 "Opomena za uklanjanje nezakonite gradnje"
             ],
             "ŽALBA": [
-                "Ž A L B A",
                 "Žalba na rešenje Poreske uprave",
                 "Žalba na presudu Osnovnog suda"
             ],
             "PODNESAK": [
-                "P O D N E S A K",
                 "Podnesak poreskog obveznika",
                 "Zahtev za izdavanje sertifikata"
             ],
@@ -81,12 +88,10 @@
                 "Zakon o krivičnom postupku (ZKP)"
             ],
             "UGOVOR": [
-                "U G O V O R",
                 "Kupoprodajni ugovor za nekretninu",
                 "Ugovor o zakupu"
             ],
             "TESTAMENT": [
-                "T E S T A M E N T",
                 "Olografni testament Marije Marić",
                 "Notarski testament"
             ]
@@ -97,19 +102,19 @@
                 "Jelena Jelenić"
             ],
             "ADVOKATI": [
-                "Advokat",
-                "Advokatska kancelarija"
+                "Advokat Dragan Draganić",
+                "Advokatska kancelarija 'Pravnik Plus'"
             ],
             "ZASTUPNICI": [
-                "Punomoćnik:",
-                "Zastupnik:"
+                "Punomoćnik: Ana Anić",
+                "Zastupnik: Prof. Dr. Ivan Ivanović"
             ],
             "BRANITELJ": [
-                "Branitelj:",
+                "Branitelj: Branko Branić",
                 "Javni branitelj"
             ],
             "PUNOMOĆNIK": [
-                "Punomoćnik:",
+                "Punomoćnik: DOO 'Pravna Zaštita'",
                 "Punomoćnik za parničenje"
             ]
         },
@@ -122,11 +127,12 @@
         },
         "Datumi": {
             "DATUM ROČIŠTA": [
-                "DATUM ROČIŠTA",
-                "datum ROČIŠTA"
+                "15.07.2024.",
+                "2024-07-15"
             ],
             "DATUM PODNOŠENJA": [
-                "DATUM PODNOŠENJA"
+                "01.06.2024.",
+                "2024-06-01"
             ]
         },
         "Sudovi": {
@@ -137,9 +143,9 @@
         },
         "Ostalo": {
             "BROJ PREDMETA": [
-                "K.",
-                "P.",
-                "Ž."
+                "K. 123/2024",
+                "P. 456/2023",
+                "Ž. 789/2022"
             ],
             "VRSTA POSTUPKA": [
                 "Parnični postupak",

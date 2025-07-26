@@ -10,3 +10,6 @@ indexing_log.txt
 extraction_log.txt
 *.dot
 *.DOT
+*initial_lora*.*
+*_log*.txt
+chat_history.json

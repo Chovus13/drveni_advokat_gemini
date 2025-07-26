@@ -1,0 +1,151 @@
+{
+  "SOURCE_DOC_DIR": "/docs",
+  "CONVERTED_DOCX_DIR": "/converted_docs",
+  "STRUCTURED_JSONL_PATH": "data/structured_corpus.jsonl",
+  "FEEDBACK_LOG_PATH": "data/feedback_log.jsonl",
+  "DEFAULT_LLM_MODEL": "mistral:7b",
+  "DEFAULT_EMBEDDING_MODEL": "sentence-transformers/paraphrase-multilingual-mpnet-base-v2",
+  "DEFAULT_DEVICE": "cuda",
+  "OLLAMA_HOST": "http://localhost:11434",
+  "VECTOR_DIMENSION": 768,
+  "DISTANCE_METRIC": "Cosine",
+  "BATCH_SIZE": 32,
+  "QDRANT_URL": "http://localhost:6333",
+  "QDRANT_COLLECTION_NAME": "drveni_advokat",
+  "REMOVE_HEADERS_FOOTERS": true,
+  "BOILERPLATE_PHRASES_TO_REMOVE": [
+    "Telefon/faks:   +381 21 816 772",
+    "E-mail address:   nikkosan@EUnet.yu",
+    "      -      ",
+    "     -      ",
+    "Sva prava zadržana.",
+    "Mobtel:   +381 21 063 509 885",
+    "063 509 885",
+    "Kontakt telefon:",
+    "E-mail address:   nikkosan@EUnet.yu"
+  ],
+  "METADATA_CATEGORIES": {
+    "Stranke": {
+      "TUŽILAC": [
+        "Državno tužilaštvo",
+        "TUŽILAC:",
+        "Poreska uprava"
+      ],
+      "TUŽENI": [
+        "TUŽENI:"
+      ],
+      "OKRIVLJENI": [
+        "OKRIVLJENI:"
+      ],
+      "OPTUŽENI": [
+        "OPTUŽENI:"
+      ],
+      "OSUMNJIČENI": [
+        "OSUMNJIČENI:"
+      ],
+      "PRODAVAC": [
+        "PRODAVAC:"
+      ],
+      "KUPAC": [
+        "KUPAC:"
+      ],
+      "STRANKA": [
+        "STRANKA:"
+      ],
+      "PORESKI OBVEZNIK": [
+        "PORESKI OBVEZNIK:"
+      ]
+    },
+    "Dokumenti": {
+      "TUŽBA": [
+        "T U Ž B A",
+        "Privredna tužba protiv DOO 'Zvezda'"
+      ],
+      "OPOMENA": [
+        "O P O M E N A"
+        "Opomena za neplaćanje",
+        "Opomena za uklanjanje nezakonite gradnje"
+      ],
+      "ŽALBA": [
+        "Ž A L B A",
+        "Žalba na rešenje Poreske uprave",
+        "Žalba na presudu Osnovnog suda"
+      ],
+      "PODNESAK": [
+        "P O D N E S A K",
+        "Podnesak poreskog obveznika",
+        "Zahtev za izdavanje sertifikata"
+      ],
+      "ZAKON": [
+        "Zakon o parničnom postupku (ZPP)",
+        "Zakon o krivičnom postupku (ZKP)"
+      ],
+      "UGOVOR": [
+        "U G O V O R",
+        "Kupoprodajni ugovor za nekretninu",
+        "Ugovor o zakupu"
+      ],
+      "TESTAMENT": [
+        "T E S T A M E N T",
+        "Olografni testament Marije Marić",
+        "Notarski testament"
+      ]
+    },
+    "Procesni učesnici": {
+      "SVEDOCI": [
+        "Miloš Milošević (svedok)",
+        "Jelena Jelenić"
+      ],
+      "ADVOKATI": [
+        "Advokat",
+        "Advokatska kancelarija"
+      ],
+      "ZASTUPNICI": [
+        "Punomoćnik:",
+        "Zastupnik:"
+      ],
+      "BRANITELJ": [
+        "Branitelj:",
+        "Javni branitelj"
+      ],
+      "PUNOMOĆNIK": [
+        "Punomoćnik:",
+        "Punomoćnik za parničenje"
+      ]
+    },
+    "Dokazi": {
+      "DOKAZI": [
+        "Faktura br. 456",
+        "Snimak nadzorne kamere",
+        "Ekspertiza o šteti"
+      ]
+    },
+    "Datumi": {
+      "DATUM ROČIŠTA": [
+        "DATUM ROČIŠTA",
+        "datum ROČIŠTA"
+      ],
+      "DATUM PODNOŠENJA": [
+        "DATUM PODNOŠENJA"
+      ]
+    },
+    "Sudovi": {
+      "SUD": [
+        "Osnovni sud u Beogradu",
+        "Privredni apelacioni sud"
+      ]
+    },
+    "Ostalo": {
+      "BROJ PREDMETA": [
+        "K. 123/2024",
+        "P. 456/2023",
+        "Ž. 789/2022"
+      ],
+      "VRSTA POSTUPKA": [
+        "Parnični postupak",
+        "Krivični postupak",
+        "Vanparnični postupak"
+      ]
+    }
+  }
+}

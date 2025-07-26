@@ -1,0 +1,235 @@
+[
+  {
+    "role": "assistant",
+    "content": "Agent je spreman. Kako vam mogu pomoći?"
+  },
+  {
+    "role": "user",
+    "content": "koliko imas podataka u bazi podataka?"
+  },
+  {
+    "role": "assistant",
+    "content": " Na osnovu dostupnih informacija, nemam odgovor na vaše pitanje.\n\n**Korišćeni izvori:**\n- `Nepoznat`",
+    "context": [
+      {
+        "page_content": "ZAKON O DRZAVNOM PREMERU I KATASTRU I UPISIMA PRAVA NA NEPOKRETNOSTIMA\n(Objavljen u \"Sl. glasniku RS\", br. 83/92, 53/93, 67/93, 48/94, 12/96, 15/96)\nClan 131.\nZa koriscenje podataka premera, katastra nepokretnosti i vodova i razgledanje katastra nepokretnosti, kao i za usluge koje pruza Republicki geodetski zavod, placa se naknada.\nVisina naknade za koriscenje podataka iz stava 1. ovog clana zavisi od visine troskova njihovog prikupljanja, obrade i unosenja u evidenciju, broja mogucih korisnika podataka, sadrzine i obima podataka i stepena njihove upotrebljivosti.\nSredstva koja od naknada iz stava 1. ovog clana ostvari Republicki geodetski zavod, pored namena utvrdjenih ovim zakonom, koriste se i za stimulaciju rada i resavanje materijalnog polozaja zaposlenih, pod uslovima i na nacin koji svojim aktom utvrdi direktor Republickog geodetskog zavoda.\nClan 132.\nVisinu naknade za koriscenje i razgledanje podataka i za pruzanje usluga iz clana 131. stav 2. ovog zakona utvrdjuje Vlada.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "Nepoznato",
+          "document_type": "Nepoznato",
+          "_id": "e69d52c6-f499-47b0-9f04-14a4d3a750e1",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "DOKAZ: da se od tuženog pribavi izveštaj sa podacima: o prezimenu, imenu, stručnoj i školskoj spremi, za sve radnike koji se od 01.05.1995.g. do dana dostavljanja izveštaja bili raspoređeni na radno mesto: \"Referent za plan i analizu\" kod tuženog i da tuženi dostavi sudu u dovoljnom broju primeraka za sud i protivstranku - rešenja o raspoređivanju i zaradi za sve te izvršioce.\n1.3. Iz iste te, sudu dostavljene \"sistematizacije\", prostim upoređivanjem broja bodova sa datim koeficijentima, da se zaključiti sledeće:\nda koeficijent 1.00 vredi tačno 540 bodova - koliko i ima \"Spremačica\" pod r.br. 29 \"Sistematizacije\" (to se vidi i iz količnika broja bodova i koeficijenta složenosti za svako radno mesto, pa tako napr. za radno mesto \"Radnik u otpadnim vodama\" iznosi: 853 : 1.59 = 540, za radno mesto direktora: 2550 : 4.72 = 540, itd.);",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "Dokić Borislav iz B. Gradišta",
+            "M. Tita 66",
+            "zastupa ga Nikola Kosanović",
+            "advokat u Bečeju"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "rešenje",
+          "_id": "bde96b95-3b96-4252-aced-37d963b78b1b",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "na listu koji je tuženi označio sa rednim brojem 6 može se videti prekinuta kolona sa leve strane lista  (ukupno 3 podvučene kolone), zbir gornje kolone iznosi 45 sati, zbir srednje iznosi 91.5 sati i zbir donje kolone iznosi 42 sata, a pored svake kolone se nalazi proizvod broja sati iz kolone sa brojem 2 - što je dokaz da je tuženi platio tužiocu cenu rada od 2 DEM, pri vrhu (ispod reči februar) nalazi se i četvrta kolona čiji zbir iznosi 17 sati, a ispod toga zbir četiri međuzbira (45+91.5+41+17= 195.5), što pokazuje da je tuženi ostao dužan tužiocu ukupan broj sati (zbir sve 4 kolone) od 195.5 dž 0.5 = 97.75 DEM.\nDakle, listovi 1 do 2 su dokaz da je tačan navod tužbe da je ugovorena cena rada tužioca bila 2.5 DEM po satu, a listovi 3 do 6 su dokaz da je tuženi \"zakinuo\" tužioca za 0.5 DEM po svakom satu evidentiranom u tom listu, što kao rekapitulacija izgleda ovako:",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "Stanisavljev Miroslav iz Bečeja",
+            "Labuda Pejovića 17",
+            "zastupa ga Nikola Kosanović",
+            "advokat u Bečeju"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "95ade4d7-eb30-431a-85af-6f56edca8678",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "U Bečeju, 05.09.1998.g.\t\t\t\t\t\tTužilac Vasiljević Radojica \nVukica mi 07/09/98 pribavila podatke za 39/83 49/86 51/88 i 36/89.\n04.04.89. marka bila oko 5400 din. Suma osiguranja 150.000.000 (51/88). RCM u YU ostvaren je za mesece: VIII/88- 14,7%, IDž- 15.4%, Dž-19.1 %, DžI-13.3%, DžII-13.4%, I/89-14.7%, II-89-21.7% III-89-18.5% i IV/89-26.4%. Ako se uzme da sumu osiguranja koja je stupila na snagu 27/08/88 treba USKLADITI sa rastom cena na malo do dana štetnog događaja, onda samo za period od 01.09.88. do 31.03.89. treba sumu osiguranja od 150 mil. pomnožiti sa 2.92 pa je limit osiguranja 438.000.000 din. što je 04/04/89 iznosilo oko 81.000 DEM po crnom kursu.\nVidi kurseve na dan podnošenja tužbe i uporedi sa traženjima, pa tako postavi tužbeni zahtev u ukupnom iznosu.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "Vasiljević Radojica iz Bačkog Petrovog Sela",
+            "Vojvođanskih brigada 43",
+            "zastupa ga Nikola Kosanović",
+            "advokat u Bečeju",
+            "po priloženoj punomoći"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "0c7f76fa-fb7a-43c5-9941-372377a4b697",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "Clan 2.\nVisina naknade utvrdjuje se Tarifom naknade za koriscenje podataka i pruzanje usluga (u daljem tekstu: Tarifa), koja je sastavni deo ove uredbe i izrazena je u bodovima.\nVrednost boda iznosi 10 novih dinara i uskladjuje se pocev od 2002. godine sa porastom cena na malo, prema zvanicno objavljenim podacima republickog organa za poslove statistike za prethodnu godinu.\nClan 3.\nObveznik naknade za koriscenje podataka i pruzanje usluga je podnosilac zahteva.\nNaknada se placa istovremeno sa podnosenjem zahteva nadleznoj organizacionoj jedinici Republickog geodetskog zavoda, odnosno pre izdavanja podataka i pre izvrsenja usluge.\nNaknada se placa u odredjenom novcanom iznosu preko ovlascene organizacije platnog prometa.\nClan 4.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "Nepoznato",
+          "document_type": "Nepoznato",
+          "_id": "97bc5c42-b69f-43b6-ba93-516d51865010",
+          "_collection_name": "drveni_advokat"
+        }
+      }
+    ]
+  },
+  {
+    "role": "user",
+    "content": "stranka petrović"
+  },
+  {
+    "role": "assistant",
+    "content": " Na osnovu dostupnih informacija, Petrovici je poznata kao stranka iz Bečeja sa adresom Vojvode Putnika br. 4.\n\n**Korišćeni izvori:**\n- `Nepoznat`",
+    "context": [
+      {
+        "page_content": "Poreski obveznik:\nDOO \"AUTO MOTOR\", Petrovaradin, Beogradska 1,\nzastupa ga Nikola Kosanović, advokat iz Bečeja, M. Tita 7,\npo punomoćju u prilogu\nRepublička uprava javnih prihoda -Beograd\n- glavnom inspektoru -\nputem\nRUJP, OJ - Centar Novi Sad\nOdelenje Finansijske policije, Odsek Novi Sad\nBulevar Mihajla Pupina br. 16\n21000  NOVI  SAD\nŽ  A  L  B  A\nna rešenje RUJP, OJ - Centar Novi Sad, Odelenja Finansijske policije,\nOdsek Novi Sad br. 47-272/98-20 od 04.01.1999.g.\n \nzbog bitnih povreda odredaba opšteg upravnog postupka, pogrešno i nepotpuno utvrđenog činjeničnog stanja i pogrešne primene materijalnog prava,\nsa predlogom prvostepenom organu da sam pobijano rešenje u celosti zameni novim, odnosno sa predlogom drugostepenom organu da isto kao nezakonito u celosti poništi i naloži prvostepenom organu donošenje novog i zakonitog rešenja u ovoj poreskoj stvari.\nR a z l o z i\n1.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "ije kupuju odeću na bonove kod \"Kluza\" recimo, a poreski obveznik ne može da kupi za tri godine ni dve obične jakne za magacinske radnike. Iznos od svega 4562,57 n.,din. koji je poreski obveznik utrošio za ove namene je skroman, imajući u vidu da je utrošen za tri godine i broj radnika koji su zaposleni kod poreskog obveznika. Zašto bi, napr. inspektor finansijske policije imao pravo na odelo, zimsko i letnje, obuću, a zaposleni kod poreskog obveznika treba da dolazi na posao u magacin u svom odelu? I odnos prema ovom trošku poreskog obveznika ukazuje na nekorektnost inspektora finansijske policije. U svakom slučaju - prvostepeni organ ozbiljno krši zakon tretirajući ovakav trošak kao lično primanje.",
+          "document_type": "rešenje",
+          "_id": "9094b4a1-8021-4462-85aa-438fc053ee3b",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "POVERILAC: \nPavkov Branko iz Bečeja, Branka Radičevića 23, \nzastupa ga Nikola Kosanović, advokat u Bečeju\nDUŽNIK: \nPavkov Milenko iz Bečeja, Branka Radičevića 17\n \nPODNESAK POVERIOCA\npredlog za donošenje rešenja\nNa I. 121-99\n1.\nPoverilac je dana 08.02.2001.god. kao suvlasnik u 1/3 dela na traktorskoj prikolici čija je vrednost 125.000 dinara - kupio na javnoj dražbi idelani deo od 2/3 dužnika PAVKOV MILENKA, budući da njegovo potraživanje prema poveriocu, a prema podacima u spisu - uveliko prelazi 2/3 napred navedene procenjene vrednosti traktorske prikolice.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U U BEČEJU",
+          "document_type": "rešenje",
+          "_id": "eeb6b804-5ee1-4533-93dd-6c67063e646a",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "KOMISIJA ZA VRAĆANJE ODUZETOG\n\tPOLJOPRIVREDNOG ZEMLJIŠTA\n\t0PŠTINE BEČEJ\nPODNOSIOCI ZAHTEVA:\nJovanović Petra Radosav,\niz Podgorice, Bulevar Lenjina br. 15, i\nJovanović Petra Milosav,\nNovi Beograd, Ul. Gandijeva br. 70, \nkoje zastupa Nikola Kosanović,\nadvokat iz Bečeja\nRaniji sopstvenik:\nJovanović Radoja Petar, bivši\niz Bačkog Petrovog Sela\nP O D N E S A K\n( i urgencija za rešavanje predmeta )\nNa broj 01-46-37/1993\nPodnosioci zahteva, kao pravni sledbenici ranijeg sopstvenika, jedina njegova deca, prilikom pokretanja parnice kod Opštinskog suda u Bečeju pod brojem P. 581/93, obavestiše poštovani Naslov o ovoj činjenici, podneskom zaprimljenim kod Naslova dana 05.11.1995.godine.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "a u Bečeju pod brojem P. 581/93, obavestiše poštovani Naslov o ovoj činjenici, podneskom zaprimljenim kod Naslova dana 05.11.1995.godine.",
+          "document_type": "Nepoznato",
+          "_id": "21a2efc5-5a54-4e0d-a84a-b915677da7e6",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "OPŠTINSKI SUD U BEČEJU\nTUŽILJA:\nPetrov Svetlana \niz Bečeja,\nUl. Partizanska br. 2/a, koju zastupa\nNikola Kosanović, adviz Bečeja\nTUŽENI:\nSmajić Hasana Redžep iz Bečeja,\nUl. Partizanska br. 2/a, sada:\nUl. Momčila Šaranovića br. 28\nT  U  Ž  B   A\nradi utvrđenja\nvrednost: 150.000 n.d.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "dde74700-89e6-4ff3-bde1-ed1ed52d83a0",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "zastupa ih Subakov Miloš, advokat u Beogradu\nTUŽENI:\nPlemić Dragana r. Mihajlović iz Bečeja, Vojvode Putnika br. 6, i\nPetrović Radosav iz Bečeja, Vojvode Putnika br. 4,\nzastupa ih Nikola Kosanović, advokat u Bečeju\nPODNESAK TUŽENIH\nmolba za odlaganje ročišta za glavnu raspravu\n \nNa  P. 365-2000\nDana 10.05.2001.g. dostavljen je punomoćniku tuženih 1. i 2. reda poziv za glavnu raspravu zakazanu za 28.05.2001.g. sa početkom u 10.30 sati.\nBudući da punomoćnik tuženih nije u mogućnosti da pristupi na ročište zakazano za 28.05.2001.g. zbog ranije preuzetih obaveza zastupanja kod Opštinskog suda u Pančevu za isti dan sa početkom u 10 sati, u predmetu P.315-2001,\npunomoćnik i tuženi 1. i 2. reda mole sud da ročište od 28.05.2001.g. odloži za neki drugi dan, u drugoj polovini juna meseca o.g.\nU Bečeju, 11.05.2001.g.\t\t\t\t\tTuženi 1. i 2. reda",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "a neuredna",
+            "jer: ako tužioci imaju zajedno samo dvadeset i drugi deo cele nepokretnosti",
+            "kao idealni \"suvlasnici\"",
+            "što tvrde u tužbi",
+            "ne mogu samo za sebe tražiti određeni deo nečije parcele",
+            "jer su svi idealni \"suvlasnici\" nužni suparničari u ovakvoj parnici.",
+            "Tužba je",
+            "svakako",
+            "i nepotpuna",
+            "kako sami tužioci i navode",
+            "pa je valjalo da ih sud rešenjem",
+            "uz pretnju odbacivanja tužbe",
+            "pozove da tužbu upotpune i urede",
+            "pre zakazivanja rasprave.",
+            "Sam tužbeni zahtev je neosnovan jer tužioci",
+            "sami ili zajedno sa drugim idealnim \"suvlasnicima\" nemaju aktivnu legitimaciju u ovoj parnici",
+            "budući da tuženi",
+            "kao vlasnici svojih kuća - izgrađenih objekata koriste gradsko građevinsko zemljište koje je u državnoj svojini",
+            "- a NEISTINA JE kako tužioci: \"U prirodi tužitelji imaju plac u površini od 1008 m2\". Tužioci bi trebalo da pruže dokaz o tome da imaju \"plac\" takve površine",
+            "jer je poznato kako se dolazilo do \"placa\" po odredbama propisa do stupanja na snagu novih",
+            "krajem 1995.godine. Tužioci ne mogu imati plac jer ga nisu mogli nikada kupiti",
+            "izuzev ako građevinsku parcelu gradskog građevinskog zemljišta nisu dobili na korišćenje u cilju izgradnje porodične stambene zgrade",
+            "navedene ili neke druge površine - za šta su",
+            "takođe",
+            "bili dužni DOKAZ priložiti. Nisu",
+            "jer ga i nemaju.",
+            "Osim u zknj. parcele koje tužioci pominju ne postoje: niti u prirodi",
+            "niti u katastarskim važećim planovima. Osim u zknj. kao staro stanje ne postoji ni zemljište opisane kulture",
+            "ne postoji ni pravo susvojine",
+            "budući da postoje i drugi propisi o režimu svojine na zemljištu - a tužioci nisu čak ni raniji sopstvenici",
+            "nikada I NISU BILI u posedu dela tuđeg zemljišta koje traže za sebe. Uostalom",
+            "valja tužioce uputiti na odredbe Zakona o građevinskom zemljištu",
+            "pa neka pokušaju sa USPOSTAVLJANJEM RANIJEG REŽIMA SVOJINE - DO TADA NEMAJU AKTIVNU LEGITIMACIJU ZA OVAKVU I OVU PARNICU.",
+            "Tužioci su od tuženih tražili",
+            "usmeno",
+            "da vrate polovinu površine iz tužbe",
+            "a ostatak da plate prema kojoj \"računici\" je od tužene Plemić Dragane traženo da plati 2160 DEM (12 m. dž 180 DEM)",
+            "a od tuženog Petrović Radosava je traženo da plati 1026 DEM (5",
+            "7 m. dž 180 DEM). Dakle",
+            "tužioci bi da trguju gradskim građevinskim zemljištem",
+            "a čak i da je u režimu privatne svojine",
+            "ne mogu to činiti jer nisu jedini vlasnici-suvlasnici",
+            "a niti mogu o tome zaključiti LEGALAN pravni posao.",
+            "DOKAZ: saslušanje parničnih stranaka.",
+            "Kod takvog stanja stvari tuženi predlažu da poštovani sud usvoji napred navedeni prigovor nedostatka aktivne legitimacije",
+            "odbije tužbeni zahtev tužilaca kao neosnovan u celosti i obaveže ih da solidarno tuženima naknade parnične troškove (koliko budu iznosili)",
+            "sa kamatom po Zakonu o visini stope zatezne kamate",
+            "računajući je od dana donošenja presude do dana isplate",
+            "sve to u roku od 15 dana pod pretnjom izvršenja.",
+            "U Bečeju",
+            "11.03.1996.g.\t\t\t\t\tTuženi :",
+            "Plemić Dragana",
+            "i",
+            "Petrović Radosav",
+            "Prilog: punomoć",
+            "Troškovnik:",
+            "OPŠTINSKOM SUDU U BEČEJU",
+            "TUŽIOCI:",
+            "Čiplić Jovan i Marija iz Bečeja",
+            "Sv. Miletića br. 72",
+            "koje zastupa Subakov Miloš",
+            "advokat u Bečeju"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U U BEČEJU",
+          "document_type": "presuda",
+          "_id": "a0adb650-1ed4-45c1-bf94-8141bba76a23",
+          "_collection_name": "drveni_advokat"
+        }
+      }
+    ]
+  }
+]

@@ -1,14 +1,43 @@
-streamlit
-ollama
-psutil
-qdrant-client
-sentence-transformers
-python-docx
-ftfy
-tqdm
-langchain
-langchain-qdrant
-langchain-huggingface
-langchain-ollama
-langchain-core
-langchain-text-splitters
+# Core dependencies
+langchain-qdrant>=0.1.0
+langchain-huggingface>=0.1.0
+langchain-ollama>=0.1.0
+langchain-core>=0.1.0
+qdrant-client>=1.9.0
+sentence-transformers>=2.5.1
+transformers>=4.40.0
+peft>=0.11.0
+datasets>=2.18.0
+tqdm>=4.66.0
+python-docx>=0.8.11
+ftfy>=6.2.0
+sentencepiece>=0.2.0
+
+# Hugging Face specific
+accelerate>=0.29.0
+bitsandbytes>=0.43.0
+torch>=2.2.0
+
+# Additional utilities
+python-multipart>=0.0.6
+loguru>=0.7.2
+pydantic>=2.6.0
+
+# For BERTic-zero-shot
+git+https://github.com/huggingface/transformers.git
+
+
+# streamlit
+# ollama
+# psutil
+# qdrant-client
+# sentence-transformers
+# python-docx
+# ftfy
+# tqdm
+# langchain
+# langchain-qdrant
+# langchain-huggingface
+# langchain-ollama
+# langchain-core
+# langchain-text-splitters
