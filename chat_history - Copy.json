@@ -1,0 +1,223 @@
+[
+  {
+    "role": "assistant",
+    "content": "Agent je spreman. Kako vam mogu pomoći?"
+  },
+  {
+    "role": "user",
+    "content": "koliko sam imao suđenja u Bečeju?"
+  },
+  {
+    "role": "assistant",
+    "content": " Na osnovu dostupnih informacija, tužilac je imao tri slučaja koji su se javljali pred Opštinskim sudom u Bečeju. Prvo slučaj se javlja 01.12.1999., drugo slučaj 4. aprila 2000. i treće slučaj 15.09.2000. (izvori: P. 516/99, Opštinski sud u Bečeju). Prilikom proučavanja dokaza se javlja četvrto slučaj koji nije datumiran, ali je spomenut u kontekstu tužbe (DOKAZI: saslušanje parničnih stranaka). Međutim, pitanje traži broj suđenja, a ne broj slučajeva, pa nema odgovora na pitanje.\n\n**Korišćeni izvori:**\n- `Nepoznat`",
+    "context": [
+      {
+        "page_content": "a sve to u roku od 15 dana pod pretnjom izvršenja. \n \nU Bečeju, 01.12.1999.g.\t\t\t\tTužioci od 1. do 4. reda\nOPŠTINSKI SUD U BEČEJU\nTUŽIOCI:\nSili Janoš iz Bečeja, Nikole Tesle 58,\nmldb. Sili Atila iz Bečeja, Nikole Tesle 58, zast. ga zak.zast. Sili Janoš, sa iste adrese,\nmldb. Sili Emeše iz Bečeja, Nikole Tesle 58, zast. ga zak. zast. Sili Janoš, sa iste adrese, i\nmldb. Trombitaš Endre iz Bečeja, Nikole Tesle 22, zast. ga zak. zast. Trombitaš Laslo, sa iste adrese, \na tužioca i zak. zast. mldb. tužilaca zastupa Nikola Kosanović, advokat u Bečeju,\npo punomoćjima u prilogu tužbe\nTUŽENI:\nKompanija \"Osiguranje Dunav\" a.d. Beograd, Glavna filijala Sombor iz Sombora\nŽivkov Aksin Milorad iz Bečeja, Todora Dukina 99/a\nPODNESAK TUŽILACA\nNa P. 516/99\n1.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "a zastupa Nikola Kosanović",
+            "advokat u Bečeju",
+            "po punomoćjima u prilogu tužbe"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "3d7fe707-6837-47e8-b687-15129f0b5a43",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "U Bečeju, 4. aprila 2000. god.\t\t\t\tUmešači 1. i 2. reda, na strani tužene,",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "presuda",
+          "_id": "562d893d-1b5a-496f-9a69-91c96b11ff4a",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "U Bečeju, 15.09.2000.god.\t\t\t\t\t\tTužilac,",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "Streljački savez Opštine Bečej iz Bečeja",
+            "Moše Pijade 1/a",
+            "zastupa ga Nikola Kosanović",
+            "advokat u Bečeju"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "abd86554-fbda-41b0-a826-cc7a8f36f480",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "DOKAZI:\nsaslušanje tužilaca kao parničnih stranaka;\nzapisnik o uviđaju Opštinskog suda u Bečeju br. Kri.167/96 od 29/12/1996 i dopunski zapisnik o uviđaju Opštiskog suda u Bečeju broj Kri. 167/96 od 11/02/1997 koji da se pročitaju iz spisa tog suda Kri.167/96 koji da se za raspravu pribavi po službenoj sužnosti;\nrešenje Opštinskog suda u Bečeju Ki.31/97 od 02/06/1999 o obustavi istrage protiv Preradov Nebojše iz Bečeja u spisu tog suda Ki.31/97 koji da se za raspravu pribavi po službenoj dužnosti i pročita - kopija istog u prilogu. \n2.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "rešenje",
+          "_id": "ec44843f-e103-40e6-95f9-9110af514a43",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "DOKAZI:\nsaslušanje parničnih stranaka;\nsaslušanje kao svedoka PEKIĆ JELENE iz Bečeja, JNA 139 stan 04;\nda se od \"ZIDAR\" d.d. iz Bečeja pribavi izveštaj o visini poslednje mesečne zarade isplaćene tužiocu;\nda se od RUJP Odelenja za utvrđivanje i naplatu javnih prihoda Bečej pribavi izveštaj o visini katastarskog prihoda na koji tužilac plaća porez, kao i ukupno zaduženje porezima i drugim javnim dažbinama za 1999. godinu.\n4.\nTužena za slučaj da sud po tužbi tužioca brak razvede predlaže poštovanom sudu da istom presudom tuženoj dosudi izdržavanje na osnovu odredbe člana 288. stav 1. Zakona o braku i porodičnim odnosima, odnosno",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "0cb29630-bb49-463a-bc15-b3e85471d488",
+          "_collection_name": "drveni_advokat"
+        }
+      }
+    ],
+    "chunks": [
+      "a sve to u roku od 15 dana pod pretnjom izvršenja. \n \nU Bečeju, 01.12.1999.g.\t\t\t\tTužioci od 1. do 4. reda\nOPŠTINSKI SUD U BEČEJU\nTUŽIOCI:\nSili Janoš iz Bečeja, Nikole Tesle 58,\nmldb. Sili Atila iz Bečeja, Nikole Tesle 58, zast. ga zak.zast. Sili Janoš, sa iste adrese,\nmldb. Sili Emeše iz Bečeja, Nikole Tesle 58, zast. ga zak. zast. Sili Janoš, sa iste adrese, i\nmldb. Trombitaš Endre iz Bečeja, Nikole Tesle 22, zast. ga zak. zast. Trombitaš Laslo, sa iste adrese, \na tužioca i zak. zast. mldb. tužilaca zastupa Nikola Kosanović, advokat u Bečeju,\npo punomoćjima u prilogu tužbe\nTUŽENI:\nKompanija \"Osiguranje Dunav\" a.d. Beograd, Glavna filijala Sombor iz Sombora\nŽivkov Aksin Milorad iz Bečeja, Todora Dukina 99/a\nPODNESAK TUŽILACA\nNa P. 516/99\n1.",
+      "U Bečeju, 4. aprila 2000. god.\t\t\t\tUmešači 1. i 2. reda, na strani tužene,",
+      "U Bečeju, 15.09.2000.god.\t\t\t\t\t\tTužilac,",
+      "DOKAZI:\nsaslušanje tužilaca kao parničnih stranaka;\nzapisnik o uviđaju Opštinskog suda u Bečeju br. Kri.167/96 od 29/12/1996 i dopunski zapisnik o uviđaju Opštiskog suda u Bečeju broj Kri. 167/96 od 11/02/1997 koji da se pročitaju iz spisa tog suda Kri.167/96 koji da se za raspravu pribavi po službenoj sužnosti;\nrešenje Opštinskog suda u Bečeju Ki.31/97 od 02/06/1999 o obustavi istrage protiv Preradov Nebojše iz Bečeja u spisu tog suda Ki.31/97 koji da se za raspravu pribavi po službenoj dužnosti i pročita - kopija istog u prilogu. \n2.",
+      "DOKAZI:\nsaslušanje parničnih stranaka;\nsaslušanje kao svedoka PEKIĆ JELENE iz Bečeja, JNA 139 stan 04;\nda se od \"ZIDAR\" d.d. iz Bečeja pribavi izveštaj o visini poslednje mesečne zarade isplaćene tužiocu;\nda se od RUJP Odelenja za utvrđivanje i naplatu javnih prihoda Bečej pribavi izveštaj o visini katastarskog prihoda na koji tužilac plaća porez, kao i ukupno zaduženje porezima i drugim javnim dažbinama za 1999. godinu.\n4.\nTužena za slučaj da sud po tužbi tužioca brak razvede predlaže poštovanom sudu da istom presudom tuženoj dosudi izdržavanje na osnovu odredbe člana 288. stav 1. Zakona o braku i porodičnim odnosima, odnosno"
+    ]
+  },
+  {
+    "role": "user",
+    "content": "koliko sam imao slucajeva u Beceju?"
+  },
+  {
+    "role": "assistant",
+    "content": " Na osnovu dostupnih informacija, podatak o broju slučajeva u Bečeju nije dostupan, jer se tekst konteksta odnosi samo na spomenute pravne akte.\n\n**Korišćeni izvori:**\n- `Nepoznat`",
+    "context": [
+      {
+        "page_content": "a sve to u roku od 15 dana pod pretnjom izvršenja. \n \nU Bečeju, 01.12.1999.g.\t\t\t\tTužioci od 1. do 4. reda\nOPŠTINSKI SUD U BEČEJU\nTUŽIOCI:\nSili Janoš iz Bečeja, Nikole Tesle 58,\nmldb. Sili Atila iz Bečeja, Nikole Tesle 58, zast. ga zak.zast. Sili Janoš, sa iste adrese,\nmldb. Sili Emeše iz Bečeja, Nikole Tesle 58, zast. ga zak. zast. Sili Janoš, sa iste adrese, i\nmldb. Trombitaš Endre iz Bečeja, Nikole Tesle 22, zast. ga zak. zast. Trombitaš Laslo, sa iste adrese, \na tužioca i zak. zast. mldb. tužilaca zastupa Nikola Kosanović, advokat u Bečeju,\npo punomoćjima u prilogu tužbe\nTUŽENI:\nKompanija \"Osiguranje Dunav\" a.d. Beograd, Glavna filijala Sombor iz Sombora\nŽivkov Aksin Milorad iz Bečeja, Todora Dukina 99/a\nPODNESAK TUŽILACA\nNa P. 516/99\n1.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "a zastupa Nikola Kosanović",
+            "advokat u Bečeju",
+            "po punomoćjima u prilogu tužbe"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "3d7fe707-6837-47e8-b687-15129f0b5a43",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "U Bečeju, 15.09.2000.god.\t\t\t\t\t\tTužilac,",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [
+            "Streljački savez Opštine Bečej iz Bečeja",
+            "Moše Pijade 1/a",
+            "zastupa ga Nikola Kosanović",
+            "advokat u Bečeju"
+          ],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "abd86554-fbda-41b0-a826-cc7a8f36f480",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "U Bečeju, 18.09.2000.g.\t\t\t\t\t\tTužioci od 1. do 3. reda",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "rešenje",
+          "_id": "fc25c1f7-6dbf-497f-a066-b2caa9e6efd6",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "U Bečeju, 4. aprila 2000. god.\t\t\t\tUmešači 1. i 2. reda, na strani tužene,",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "presuda",
+          "_id": "562d893d-1b5a-496f-9a69-91c96b11ff4a",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "u Bečeju,avgusta 2001.god\n                                                                                        Priredio,\n                                                                                      Molnar Imre",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "eći prema L.D.) odlazi na godišnji odmor u jeku najvećih poslova.Inače u specifikaciji tih radova koju je izradilo odeljenje za pripremu i razvoj tehničke službe,  bilo je predviđeno da radove u glavnom izvode naši radnici, s tim da se potkrala \"mala\" greška u tom planu, tako da uopšte nisu predviđeni radovi na premeštanju ekstrudera i radovi na ugradnji nove i premeštanju stare opreme ( ali je zato za pozicijiu \"svi ostali sitniji neplanirani radovi i neophodan materijal , predviđeno tačno 447 070,70 din ).Tako sada gro radova rade druge firme.Naravno, tu se postavlja pitanje i opravdanosti premeštanja ekstrudera jer je očigledno da je iskorištenje ekstrudera za TSP oko 39% prema broju radnih sati za 7 meseci, što znači da se komotno mogla proizvodnja organizovati i na jednom ekstruderu.(a pri tom proizvoditi i punomasni proizvodi koji se već četiri meseca ne proizvode)",
+          "document_type": "Nepoznato",
+          "_id": "4acbc0c1-2a6a-40e8-a1c2-f160db28eaa2",
+          "_collection_name": "drveni_advokat"
+        }
+      }
+    ],
+    "chunks": [
+      "a sve to u roku od 15 dana pod pretnjom izvršenja. \n \nU Bečeju, 01.12.1999.g.\t\t\t\tTužioci od 1. do 4. reda\nOPŠTINSKI SUD U BEČEJU\nTUŽIOCI:\nSili Janoš iz Bečeja, Nikole Tesle 58,\nmldb. Sili Atila iz Bečeja, Nikole Tesle 58, zast. ga zak.zast. Sili Janoš, sa iste adrese,\nmldb. Sili Emeše iz Bečeja, Nikole Tesle 58, zast. ga zak. zast. Sili Janoš, sa iste adrese, i\nmldb. Trombitaš Endre iz Bečeja, Nikole Tesle 22, zast. ga zak. zast. Trombitaš Laslo, sa iste adrese, \na tužioca i zak. zast. mldb. tužilaca zastupa Nikola Kosanović, advokat u Bečeju,\npo punomoćjima u prilogu tužbe\nTUŽENI:\nKompanija \"Osiguranje Dunav\" a.d. Beograd, Glavna filijala Sombor iz Sombora\nŽivkov Aksin Milorad iz Bečeja, Todora Dukina 99/a\nPODNESAK TUŽILACA\nNa P. 516/99\n1.",
+      "U Bečeju, 15.09.2000.god.\t\t\t\t\t\tTužilac,",
+      "U Bečeju, 18.09.2000.g.\t\t\t\t\t\tTužioci od 1. do 3. reda",
+      "U Bečeju, 4. aprila 2000. god.\t\t\t\tUmešači 1. i 2. reda, na strani tužene,",
+      "u Bečeju,avgusta 2001.god\n                                                                                        Priredio,\n                                                                                      Molnar Imre"
+    ]
+  },
+  {
+    "role": "user",
+    "content": "Tot Silvester je imao koliko slucajeva?"
+  },
+  {
+    "role": "assistant",
+    "content": " Na osnovu dostupnih informacija, nemam odgovor na pitanje o broju slučajeva koji je Tot Silvester imao.\n\n**Korišćeni izvori:**\n- `Nepoznat`",
+    "context": [
+      {
+        "page_content": "Istina je ovo. Svedok VIG BELA, mlađi, slučajno je prolazio putem pored magacina koji je okrivljeni po završetku radnog vremena zaključavao i videvši okrivljenog zaustavio zapregu i upitao okrivljenog da li ima seme stočnog graška. Okrivljeni je rekao da ima 250 kg semena (to je bilo seme koje je Popov Sava bio izneo na njivu, a kao neutrošeno vratio u magacin), svedok je tih 250 kg semena natovario na špediter i odneo, a bilo je dogovoreno da dođe sutradan da se sačine papiri - otpremnica i ugovor. Okrivljeni je ove papire pripremio. Vig Bela mlađi NIJE došao sutradan. Budući da je dokumentaciju trebalo predati direkciji - okrivljeni je dokumentaciju pripremio za predaju, ali ovom prilikom NIJE nigde potpisao umesto kooperanta VIG BELE, već je stavio svoj paraf PORED mesta za potpis predviđenog za potpis kooperanta. Kooperant VIG BELA mlađi je trebao da potpiše sebe na primercima koji su ostali u radnoj jedinici. Tek posle više od dve nedelje okrivljeni je sreo VIG BELU mlađeg (vozio",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "Nepoznato",
+          "_id": "f0706772-c93c-43eb-948a-1723417f7408",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "da je poslednjom prilikom - 14.11.2000.god. poverilac pozvonila na spoljni prekidač elektro-zvona u kući dužnika, dužnik Koletar Radmila (ne znajući ko zvoni) otključala je dvorišnu kapiju i kada je utvrdila da je poverilac osoba koja je zvonila - onemogućavala je poverioca da u dvorište uđe, u čemu joj je pomagao i sin - Koletar Miodrag, i na kraju su ovi, poverioca koja je nekako uspela ući u dvorište - primenom fizičke sile poverioca izbacili na ulicu, tako da u svoju kuću poverilac i nije mogla ući;\nda su dužnici nastavili sa smetanjem poseda zidanjem dve šupe u dvorištu poverioca.\nDOKAZI:  saslušanje stranaka, uviđaj na licu mesta.",
+        "metadata": {
+          "judge": "Nepoznato",
+          "plaintiff": [],
+          "defendant": [],
+          "decision_date": "Nepoznato",
+          "court": "U BEČEJU",
+          "document_type": "rešenje",
+          "_id": "0c1462cc-af22-4bc6-85c6-69bb0bf8b415",
+          "_collection_name": "drveni_advokat"
+        }
+      },
+      {
+        "page_content": "3./Sasvim slučajno sam, pre desetak dana, u Bečeju, u mlinu, sreo čoveka po imenu MAĐAR JANOŠ, sa stanom u Bečeju, Ul. Proleterska br. 26, i u razgovoru
