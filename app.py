@@ -10,6 +10,8 @@ import json
 import logging
 from rag_agent import RAGAgent
 import config
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import json
 
 # Podešavanje logovanja za app.py
 logging.basicConfig(
@@ -100,12 +102,36 @@ if "config_data" not in st.session_state:
     st.session_state.config_data = {k: v for k, v in vars(config).items() if not k.startswith('__')}
 if "show_chunks" not in st.session_state:
     st.session_state.show_chunks = False
+if "chunk_size" not in st.session_state:
+    st.session_state.chunk_size = 1000
+if "chunk_overlap" not in st.session_state:
+    st.session_state.chunk_overlap = 200
+if "sample_text" not in st.session_state:
+    with open("1line/structured_corpus.json", "r", encoding="utf-8") as f:
+        sample_data = json.load(f)
+        st.session_state.sample_text = sample_data.get("full_text", "")
+if "metadata_params" not in st.session_state:
+    st.session_state.metadata_params = json.dumps(config.METADATA_CATEGORIES, indent=2)
 
 # --- Glavni Interfejs sa Tabovima ---
-tab1, tab2, tab3 = st.tabs(["Chat", "Podešavanja", "Metadata Editor"])
+tab1, tab2, tab3, tab4 = st.tabs(["Chat", "Podešavanja", "Metadata Editor", "Chunk Preview"])
 
 with tab1:
     st.title("Drveni Advokat - RAG Sistem")
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("New Chat"):
+            st.session_state.messages = [{"role": "assistant", "content": "Nova sesija započeta. Kako vam mogu pomoći?"}]
+            with open("chat_history.json", "w", encoding="utf-8") as f:
+                json.dump(st.session_state.messages, f, ensure_ascii=False, indent=2)
+            st.rerun()
+    with col2:
+        if st.button("Clear Chat"):
+            st.session_state.messages = [{"role": "assistant", "content": "Chat obrisan. Počnite novi razgovor."}]
+            with open("chat_history.json", "w", encoding="utf-8") as f:
+                json.dump(st.session_state.messages, f, ensure_ascii=False, indent=2)
+            st.rerun()
+
     st.checkbox("Prikaži Chunks", value=st.session_state.show_chunks, key="show_chunks_toggle")
     st.session_state.show_chunks = st.session_state.show_chunks_toggle
 
@@ -259,6 +285,40 @@ with tab3:
     metadata = config.METADATA_CATEGORIES.copy()
     
     category = st.selectbox("Izaberite Kategoriju", list(metadata.keys()) + ["Dodaj Novu Kategoriju"])
+
+with tab4:
+    st.header("Chunk Preview Dashboard")
+    st.session_state.chunk_size = st.slider("Chunk Size", min_value=100, max_value=2000, value=st.session_state.chunk_size, step=100)
+    st.session_state.chunk_overlap = st.slider("Chunk Overlap", min_value=0, max_value=500, value=st.session_state.chunk_overlap, step=50)
+    st.session_state.metadata_params = st.text_area("Metadata Parameters (JSON)", value=st.session_state.metadata_params, height=200)
+
+    if st.button("Update Preview"):
+        try:
+            updated_metadata = json.loads(st.session_state.metadata_params)
+            save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': updated_metadata})
+            st.success("Metadata parameters updated!")
+        except json.JSONDecodeError:
+            st.error("Invalid JSON format for metadata parameters.")
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=st.session_state.chunk_size,
+        chunk_overlap=st.session_state.chunk_overlap
+    )
+    preview_chunks = text_splitter.split_text(st.session_state.sample_text)
+    st.subheader("Chunk Preview")
+    st.write(format_chunks(preview_chunks))
+
+    if st.button("Log Feedback for LoRA"):
+        with open(config.FEEDBACK_LOG_PATH, "a", encoding="utf-8") as f:
+            feedback = {
+                "chunk_size": st.session_state.chunk_size,
+                "chunk_overlap": st.session_state.chunk_overlap,
+                "chunks": preview_chunks,
+                "timestamp": time.time()
+            }
+            json.dump(feedback, f)
+            f.write("\n")
+        st.success("Feedback logged for LoRA dataset!")
     
     if category == "Dodaj Novu Kategoriju":
         new_category = st.text_input("Naziv Nove Kategorije")

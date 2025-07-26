@@ -9,6 +9,7 @@ from tqdm import tqdm
 import logging
 import ftfy
 import config
+from transformers import pipeline
 
 logging.basicConfig(
     filename='extraction_log.txt',
@@ -104,10 +105,14 @@ def extract_and_clean_document(document: docx.Document) -> tuple[str, dict]:
 # Funkcije extract_metadata_from_text i process_docx_files ostaju ISTE
 def extract_metadata_from_text(text: str) -> dict:
     metadata = {}
+    # Koristi hardcoded patterns za osnovnu ekstrakciju
     patterns = {
-        "case_id": r"Broj predmeta:?\s*([\w\d\s\/-]+)", "judge": r"Sudija:?\s*([A-ZŠĐČĆŽ][a-zšđčćž]+(?:\s+[A-ZŠĐČĆŽ][a-zšđčćž]+)+)",
-        "plaintiff": r"Tužilac:?\s*(.*?)(?=\nTuženi:|Sudija:)", "defendant": r"Tuženi:?\s*(.*?)(?=\nSud:|Datum presude:)",
-        "court": r"Sud:?\s*(.*?)(?=\n|$)", "decision_date": r"Datum presude:?\s*(\d{1,2}\.\d{1,2}\.\d{4}\.?|\d{4}-\d{2}-\d{2})",
+        "case_id": r"Broj predmeta:?\s*([\w\d\s\/-]+)", 
+        "judge": r"Sudija:?\s*([A-ZŠĐČĆŽ][a-zšđčćž]+(?:\s+[A-ZŠĐČĆŽ][a-zšđčćž]+)+)",
+        "plaintiff": r"Tužilac:?\s*(.*?)(?=\nTuženi:|Sudija:)", 
+        "defendant": r"Tuženi:?\s*(.*?)(?=\nSud:|Datum presude:)",
+        "court": r"Sud:?\s*(.*?)(?=\n|$)", 
+        "decision_date": r"Datum presude:?\s*(\d{1,2}\.\d{1,2}\.\d{4}\.?|\d{4}-\d{2}-\d{2})",
         "document_type": r"\b(PRESUDA|REŠENJE)\b" 
     }
     for key, pattern in patterns.items():
@@ -119,6 +124,28 @@ def extract_metadata_from_text(text: str) -> dict:
                 metadata[key] = [item.strip() for item in items if item.strip()]
             else:
                 metadata[key] = extracted_value
+
+    # Poboljšana ekstrakcija koristeći METADATA_CATEGORIES iz dynamic_config
+    for category, subcats in config.METADATA_CATEGORIES.items():
+        for subcat, keywords in subcats.items():
+            for keyword in keywords:
+                if keyword.lower() in text.lower():
+                    if category not in metadata:
+                        metadata[category] = {}
+                    if subcat not in metadata[category]:
+                        metadata[category][subcat] = []
+                    metadata[category][subcat].append(keyword)
+
+    # Dodaj zero-shot BERT za automatsku ekstrakciju (koristi srpski BERTić ili sličan)
+    try:
+        classifier = pipeline("zero-shot-classification", model="Nerys/BERTic-zero-shot")
+        candidate_labels = list(config.METADATA_CATEGORIES.keys()) + ["Nepoznato"]
+        results = classifier(text[:512], candidate_labels)  # Ograniči na prvih 512 tokena
+        if results['labels'][0] != "Nepoznato":
+            metadata["auto_classified"] = results['labels'][0]
+    except Exception as e:
+        logging.warning(f"Greška u BERT zero-shot: {e}")
+
     return metadata
 
 def process_docx_files(source_dir: str, output_path: str):

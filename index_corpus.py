@@ -9,13 +9,14 @@ import logging
 from qdrant_client import QdrantClient, models
 from sentence_transformers import SentenceTransformer
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import config
 
 # --- Konfiguracija ---
 logging.basicConfig(filename='indexing_log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-EMBEDDING_MODEL_NAME = 'sentence-transformers/paraphrase-multilingual-mpnet-base-v2'
-VECTOR_DIMENSION = 768
-DISTANCE_METRIC = models.Distance.COSINE
-BATCH_SIZE = 32 # Manji batch size za bolju kontrolu memorije
+EMBEDDING_MODEL_NAME = config.DEFAULT_EMBEDDING_MODEL
+VECTOR_DIMENSION = config.VECTOR_DIMENSION
+DISTANCE_METRIC = getattr(models.Distance, config.DISTANCE_METRIC.upper())
+BATCH_SIZE = config.BATCH_SIZE
 
 def setup_qdrant_collection(client: QdrantClient, collection_name: str):
     """Proverava i kreira Qdrant kolekciju."""
@@ -29,7 +30,7 @@ def setup_qdrant_collection(client: QdrantClient, collection_name: str):
             vectors_config=models.VectorParams(size=VECTOR_DIMENSION, distance=DISTANCE_METRIC),
         )
 
-def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
+def index_corpus(jsonl_path: str, qdrant_url: str = config.QDRANT_URL, collection_name: str = config.QDRANT_COLLECTION_NAME):
     """Glavna funkcija za indeksiranje JSONL korpusa u Qdrant."""
     
     # --- Inicijalizacija ---
@@ -103,7 +104,7 @@ def index_corpus(jsonl_path: str, qdrant_url: str, collection_name: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Indeksira strukturirani JSONL korpus u Qdrant.")
     parser.add_argument("jsonl_path", type=str, help="Putanja do structured_corpus.jsonl fajla.")
-    parser.add_argument("--qdrant-url", type=str, default="http://localhost:6333", help="URL Qdrant instance.")
-    parser.add_argument("--collection-name", type=str, default="drveni_advokat", help="Ime Qdrant kolekcije.")
+    parser.add_argument("--qdrant-url", type=str, default=config.QDRANT_URL, help="URL Qdrant instance.")
+    parser.add_argument("--collection-name", type=str, default=config.QDRANT_COLLECTION_NAME, help="Ime Qdrant kolekcije.")
     args = parser.parse_args()
     index_corpus(args.jsonl_path, args.qdrant_url, args.collection_name)
