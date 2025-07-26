@@ -63,12 +63,18 @@ class RAGAgent:
         
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 5})
         
+        self.lora_path = "models/drveni_advokat_lora"
         try:
-            self.llm = OllamaLLM(model=llm_model, base_url=config.OLLAMA_HOST)
-            test_response = self.llm.invoke("Test")
-            logging.info("OllamaLLM uspešno inicijalizovan i testiran sa modelom %s. Test odgovor: %s", llm_model, test_response)
+            if os.path.exists(self.lora_path):
+                self.llm = AutoModelForSeq2SeqLM.from_pretrained(self.lora_path)
+                self.tokenizer = AutoTokenizer.from_pretrained(self.lora_path)
+                logging.info("LoRA fine-tuned model loaded successfully.")
+            else:
+                self.llm = OllamaLLM(model=llm_model, base_url=config.OLLAMA_HOST)
+                test_response = self.llm.invoke("Test")
+                logging.info("OllamaLLM uspešno inicijalizovan i testiran sa modelom %s. Test odgovor: %s", llm_model, test_response)
         except Exception as e:
-            logging.error("Greška pri inicijalizaciji ili testiranju OllamaLLM: %s", e)
+            logging.error("Greška pri inicijalizaciji ili testiranju LLM: %s", e)
             raise
         
         template = """
@@ -94,6 +100,14 @@ Odgovor:
         )
         logging.info("RAG lanac uspešno inicijalizovan.")
         print("RAG Agent je spreman.")
+
+    def update_with_lora(self):
+        if os.path.exists(self.lora_path):
+            self.llm = AutoModelForSeq2SeqLM.from_pretrained(self.lora_path)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.lora_path)
+            logging.info("Model updated with LoRA adapter.")
+        else:
+            logging.warning("LoRA model not found, skipping update.")
 
     def ask(self, question: str):
         logging.info("Postavljeno pitanje: %s", question)

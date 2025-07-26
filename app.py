@@ -103,20 +103,213 @@ if "config_data" not in st.session_state:
 if "show_chunks" not in st.session_state:
     st.session_state.show_chunks = False
 if "chunk_size" not in st.session_state:
-    st.session_state.chunk_size = 1000
+    st.session_state.chunk_size = 512
 if "chunk_overlap" not in st.session_state:
-    st.session_state.chunk_overlap = 200
+    st.session_state.chunk_overlap = 128
 if "sample_text" not in st.session_state:
-    with open("1line/structured_corpus.json", "r", encoding="utf-8") as f:
-        sample_data = json.load(f)
+    with open("1line/structured_corpus.jsonl", "r", encoding="utf-8") as f:
+        first_line = f.readline()
+        sample_data = json.loads(first_line)
         st.session_state.sample_text = sample_data.get("full_text", "")
 if "metadata_params" not in st.session_state:
     st.session_state.metadata_params = json.dumps(config.METADATA_CATEGORIES, indent=2)
 
 # --- Glavni Interfejs sa Tabovima ---
-tab1, tab2, tab3, tab4 = st.tabs(["Chat", "Podešavanja", "Metadata Editor", "Chunk Preview"])
+left_col, main_col = st.columns([1, 3])
 
-with tab1:
+with left_col:
+    st.header("Model Selection")
+    available_models = get_ollama_models()
+    if available_models:
+        try:
+            default_index = available_models.index(st.session_state.selected_llm)
+        except ValueError:
+            default_index = 0
+        st.session_state.selected_llm = st.selectbox(
+            "Izaberite LLM Model:",
+            available_models,
+            index=default_index
+        )
+    else:
+        st.warning("Nema dostupnih Ollama modela. Proverite logove.")
+
+    st.session_state.selected_device = st.selectbox(
+        "Uređaj za Embedding:",
+        ("cpu", "cuda"),
+        index=0 if st.session_state.selected_device == "cpu" else 1
+    )
+
+    if st.button("Inicijalizuj Agenta", type="primary"):
+        with st.spinner(f"Inicijalizacija sa modelom '{st.session_state.selected_llm}' na '{st.session_state.selected_device.upper()}'..."):
+            logging.info("Pokušaj inicijalizacije agenta sa modelom %s na %s", st.session_state.selected_llm, st.session_state.selected_device)
+            try:
+                st.session_state.agent = RAGAgent(
+                    llm_model=st.session_state.selected_llm,
+                    embedding_model=config.DEFAULT_EMBEDDING_MODEL,
+                    device=st.session_state.selected_device
+                )
+                st.success("Agent uspešno inicijalizovan!")
+                logging.info("Agent uspešno inicijalizovan.")
+                st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman. Kako vam mogu pomoći?"}]
+                st.rerun()
+            except Exception as e:
+                error_msg = f"Greška pri inicijalizaciji: {e}"
+                logging.error(error_msg)
+                st.error(error_msg)
+
+    # Auto-start
+    if st.session_state.agent is None and available_models:
+        with st.spinner("Automatska inicijalizacija..."):
+            logging.info("Automatska inicijalizacija agenta.")
+            try:
+                st.session_state.agent = RAGAgent(
+                    llm_model=st.session_state.selected_llm,
+                    embedding_model=config.DEFAULT_EMBEDDING_MODEL,
+                    device=st.session_state.selected_device
+                )
+                st.success("Agent automatski inicijalizovan!")
+                logging.info("Agent automatski inicijalizovan.")
+                st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman."}]
+                st.rerun()
+            except Exception as e:
+                error_msg = f"Greška pri automatskoj inicijalizaciji: {e}"
+                logging.error(error_msg)
+                st.error(error_msg)
+                st.session_state.agent = None
+
+    st.header("Config Editor")
+    updated_config = st.session_state.config_data.copy()
+    updated_config['SOURCE_DOC_DIR'] = st.text_input("Source Doc Dir", value=config.SOURCE_DOC_DIR)
+    updated_config['CONVERTED_DOCX_DIR'] = st.text_input("Converted Docx Dir", value=config.CONVERTED_DOCX_DIR)
+    updated_config['STRUCTURED_JSONL_PATH'] = st.text_input("Structured JSONL Path", value=config.STRUCTURED_JSONL_PATH)
+    updated_config['FEEDBACK_LOG_PATH'] = st.text_input("Feedback Log Path", value=config.FEEDBACK_LOG_PATH)
+    updated_config['DEFAULT_LLM_MODEL'] = st.text_input("Default LLM Model", value=config.DEFAULT_LLM_MODEL)
+    updated_config['DEFAULT_EMBEDDING_MODEL'] = st.text_input("Default Embedding Model", value=config.DEFAULT_EMBEDDING_MODEL)
+    updated_config['DEFAULT_DEVICE'] = st.text_input("Default Device", value=config.DEFAULT_DEVICE)
+    updated_config['OLLAMA_HOST'] = st.text_input("Ollama Host", value=config.OLLAMA_HOST)
+    updated_config['VECTOR_DIMENSION'] = st.number_input("Vector Dimension", value=config.VECTOR_DIMENSION)
+    updated_config['DISTANCE_METRIC'] = st.text_input("Distance Metric", value=config.DISTANCE_METRIC)
+    updated_config['BATCH_SIZE'] = st.number_input("Batch Size", value=config.BATCH_SIZE)
+    updated_config['QDRANT_URL'] = st.text_input("Qdrant URL", value=config.QDRANT_URL)
+    updated_config['QDRANT_COLLECTION_NAME'] = st.text_input("Qdrant Collection Name", value=config.QDRANT_COLLECTION_NAME)
+    updated_config['REMOVE_HEADERS_FOOTERS'] = st.checkbox("Remove Headers/Footers", value=config.REMOVE_HEADERS_FOOTERS)
+    updated_config['BOILERPLATE_PHRASES_TO_REMOVE'] = st.text_area("Boilerplate Phrases (one per line)", value="\n".join(config.BOILERPLATE_PHRASES_TO_REMOVE)).split("\n")
+
+    if st.button("Sačuvaj Podešavanja"):
+        save_config(updated_config)
+        st.session_state.config_data = updated_config
+        st.success("Podešavanja sačuvana i primenjena!")
+        logging.info("Podešavanja sačuvana.")
+
+    st.header("Metadata Editor")
+    metadata = config.METADATA_CATEGORIES.copy()
+    
+    category = st.selectbox("Izaberite Kategoriju", list(metadata.keys()) + ["Dodaj Novu Kategoriju"])
+    if category == "Dodaj Novu Kategoriju":
+        new_category = st.text_input("Naziv Nove Kategorije")
+        if st.button("Dodaj Kategoriju") and new_category:
+            metadata[new_category] = {}
+            save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
+            st.success(f"Dodata kategorija: {new_category}")
+            st.rerun()
+    else:
+        if st.button("Obriši Kategoriju"):
+            del metadata[category]
+            save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
+            st.success(f"Obrisana kategorija: {category}")
+            st.rerun()
+        
+        subcategory = st.selectbox("Izaberite Podkategoriju", list(metadata[category].keys()) + ["Dodaj Novu Podkategoriju"])
+        
+        if subcategory == "Dodaj Novu Podkategoriju":
+            new_sub = st.text_input("Naziv Nove Podkategorije")
+            if st.button("Dodaj Podkategoriju") and new_sub:
+                metadata[category][new_sub] = []
+                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
+                st.success(f"Dodata podkategorija: {new_sub}")
+                st.rerun()
+        else:
+            if st.button("Obriši Podkategoriju"):
+                del metadata[category][subcategory]
+                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
+                st.success(f"Obrisana podkategorija: {subcategory}")
+                st.rerun()
+            
+            st.subheader(f"Vrednosti za {subcategory}")
+            values = metadata[category][subcategory]
+            for i, val in enumerate(values):
+                new_val = st.text_input(f"Vrednost {i+1}", value=val, key=f"val_{category}_{subcategory}_{i}")
+                if new_val != val:
+                    values[i] = new_val
+            
+            if st.button("Sačuvaj Promene Vrednosti"):
+                metadata[category][subcategory] = [v for v in values if v]
+                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
+                st.success("Vrednosti ažurirane!")
+            
+            new_value = st.text_input("Dodaj Novu Vrednost")
+            if st.button("Dodaj Vrednost") and new_value:
+                values.append(new_value)
+                metadata[category][subcategory] = values
+                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
+                st.success(f"Dodata vrednost: {new_value}")
+                st.rerun()
+
+    st.header("Chunk Preview Dashboard")
+    st.session_state.chunk_size = st.slider("Chunk Size", min_value=100, max_value=2000, value=st.session_state.chunk_size, step=100)
+    st.session_state.chunk_overlap = st.slider("Chunk Overlap", min_value=0, max_value=500, value=st.session_state.chunk_overlap, step=50)
+    st.session_state.metadata_params = st.text_area("Metadata Parameters (JSON)", value=st.session_state.metadata_params, height=200)
+
+    if st.button("Update Preview"):
+        try:
+            updated_metadata = json.loads(st.session_state.metadata_params)
+            save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': updated_metadata})
+            st.success("Metadata parameters updated!")
+        except json.JSONDecodeError:
+            st.error("Invalid JSON format for metadata parameters.")
+
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=st.session_state.chunk_size,
+        chunk_overlap=st.session_state.chunk_overlap
+    )
+    preview_chunks = text_splitter.split_text(st.session_state.sample_text)
+
+    # Highlight metadata in chunks
+    metadata_keywords = [kw for cat in config.METADATA_CATEGORIES.values() for sub in cat.values() for kw in sub]
+    highlighted_chunks = []
+    for chunk in preview_chunks:
+        for kw in metadata_keywords:
+            chunk = chunk.replace(kw, f"**{kw}**")
+        highlighted_chunks.append(chunk)
+
+    st.subheader("Chunk Preview with Highlighted Metadata")
+    st.write(format_chunks(highlighted_chunks))
+
+    rating = st.selectbox("Rate this chunking", ["Good", "Bad"])
+    corrected_chunks = st.text_area("If Bad, provide corrected chunks (optional)", height=100) if rating == "Bad" else ""
+
+    if st.button("Log Feedback for LoRA"):
+        with open(config.FEEDBACK_LOG_PATH, "a", encoding="utf-8") as f:
+            feedback = {
+                "chunk_size": st.session_state.chunk_size,
+                "chunk_overlap": st.session_state.chunk_overlap,
+                "chunks": preview_chunks,
+                "rating": rating,
+                "corrected": corrected_chunks,
+                "timestamp": time.time()
+            }
+            json.dump(feedback, f)
+            f.write("\n")
+        st.success("Feedback logged for LoRA dataset!")
+
+    # Self-learning indicator
+    feedback_count = 0
+    if os.path.exists(config.FEEDBACK_LOG_PATH):
+        with open(config.FEEDBACK_LOG_PATH, "r") as f:
+            feedback_count = sum(1 for _ in f)
+    st.metric("Dataset kvalitet", f"{feedback_count}/1000 primera za LoRA")
+
+with main_col:
     st.title("Drveni Advokat - RAG Sistem")
     col1, col2 = st.columns(2)
     with col1:
@@ -195,98 +388,16 @@ with tab1:
                         logging.error(error_msg)
                         st.error(error_msg, icon="🔥")
 
-with tab2:
-    st.header("Podešavanja Agenta i Konfiguracije")
-    
-    available_models = get_ollama_models()
-    if available_models:
-        try:
-            default_index = available_models.index(st.session_state.selected_llm)
-        except ValueError:
-            default_index = 0
-        st.session_state.selected_llm = st.selectbox(
-            "Izaberite LLM Model:",
-            available_models,
-            index=default_index
-        )
-    else:
-        st.warning("Nema dostupnih Ollama modela. Proverite logove.")
+# Status Sistema u Sidebaru
+with st.sidebar:
+    st.subheader("Status Sistema")
+    cpu_usage = st.empty()
+    ram_usage = st.empty()
+    while True:
+        cpu_usage.metric("CPU Zauzeće", f"{psutil.cpu_percent()}%")
+        ram_usage.metric("RAM Zauzeće", f"{psutil.virtual_memory().percent}%")
+        time.sleep(1)
 
-    st.session_state.selected_device = st.selectbox(
-        "Uređaj za Embedding:",
-        ("cpu", "cuda"),
-        index=0 if st.session_state.selected_device == "cpu" else 1
-    )
-
-    if st.button("Inicijalizuj Agenta", type="primary"):
-        with st.spinner(f"Inicijalizacija sa modelom '{st.session_state.selected_llm}' na '{st.session_state.selected_device.upper()}'..."):
-            logging.info("Pokušaj inicijalizacije agenta sa modelom %s na %s", st.session_state.selected_llm, st.session_state.selected_device)
-            try:
-                st.session_state.agent = RAGAgent(
-                    llm_model=st.session_state.selected_llm,
-                    embedding_model=config.DEFAULT_EMBEDDING_MODEL,
-                    device=st.session_state.selected_device
-                )
-                st.success("Agent uspešno inicijalizovan!")
-                logging.info("Agent uspešno inicijalizovan.")
-                st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman. Kako vam mogu pomoći?"}]
-                st.rerun()
-            except Exception as e:
-                error_msg = f"Greška pri inicijalizaciji: {e}"
-                logging.error(error_msg)
-                st.error(error_msg)
-
-    # Auto-start
-    if st.session_state.agent is None and available_models:
-        with st.spinner("Automatska inicijalizacija..."):
-            logging.info("Automatska inicijalizacija agenta.")
-            try:
-                st.session_state.agent = RAGAgent(
-                    llm_model=st.session_state.selected_llm,
-                    embedding_model=config.DEFAULT_EMBEDDING_MODEL,
-                    device=st.session_state.selected_device
-                )
-                st.success("Agent automatski inicijalizovan!")
-                logging.info("Agent automatski inicijalizovan.")
-                st.session_state.messages = [{"role": "assistant", "content": "Agent je spreman."}]
-                st.rerun()
-            except Exception as e:
-                error_msg = f"Greška pri automatskoj inicijalizaciji: {e}"
-                logging.error(error_msg)
-                st.error(error_msg)
-                st.session_state.agent = None
-
-    st.subheader("Ostala Podešavanja")
-    updated_config = st.session_state.config_data.copy()
-    updated_config['SOURCE_DOC_DIR'] = st.text_input("Source Doc Dir", value=config.SOURCE_DOC_DIR)
-    updated_config['CONVERTED_DOCX_DIR'] = st.text_input("Converted Docx Dir", value=config.CONVERTED_DOCX_DIR)
-    updated_config['STRUCTURED_JSONL_PATH'] = st.text_input("Structured JSONL Path", value=config.STRUCTURED_JSONL_PATH)
-    updated_config['FEEDBACK_LOG_PATH'] = st.text_input("Feedback Log Path", value=config.FEEDBACK_LOG_PATH)
-    updated_config['DEFAULT_LLM_MODEL'] = st.text_input("Default LLM Model", value=config.DEFAULT_LLM_MODEL)
-    updated_config['DEFAULT_EMBEDDING_MODEL'] = st.text_input("Default Embedding Model", value=config.DEFAULT_EMBEDDING_MODEL)
-    updated_config['DEFAULT_DEVICE'] = st.text_input("Default Device", value=config.DEFAULT_DEVICE)
-    updated_config['OLLAMA_HOST'] = st.text_input("Ollama Host", value=config.OLLAMA_HOST)
-    updated_config['VECTOR_DIMENSION'] = st.number_input("Vector Dimension", value=config.VECTOR_DIMENSION)
-    updated_config['DISTANCE_METRIC'] = st.text_input("Distance Metric", value=config.DISTANCE_METRIC)
-    updated_config['BATCH_SIZE'] = st.number_input("Batch Size", value=config.BATCH_SIZE)
-    updated_config['QDRANT_URL'] = st.text_input("Qdrant URL", value=config.QDRANT_URL)
-    updated_config['QDRANT_COLLECTION_NAME'] = st.text_input("Qdrant Collection Name", value=config.QDRANT_COLLECTION_NAME)
-    updated_config['REMOVE_HEADERS_FOOTERS'] = st.checkbox("Remove Headers/Footers", value=config.REMOVE_HEADERS_FOOTERS)
-    updated_config['BOILERPLATE_PHRASES_TO_REMOVE'] = st.text_area("Boilerplate Phrases (one per line)", value="\n".join(config.BOILERPLATE_PHRASES_TO_REMOVE)).split("\n")
-
-    if st.button("Sačuvaj Podešavanja"):
-        save_config(updated_config)
-        st.session_state.config_data = updated_config
-        st.success("Podešavanja sačuvana i primenjena!")
-        logging.info("Podešavanja sačuvana.")
-
-with tab3:
-    st.header("Metadata Editor")
-    metadata = config.METADATA_CATEGORIES.copy()
-    
-    category = st.selectbox("Izaberite Kategoriju", list(metadata.keys()) + ["Dodaj Novu Kategoriju"])
-
-with tab4:
     st.header("Chunk Preview Dashboard")
     st.session_state.chunk_size = st.slider("Chunk Size", min_value=100, max_value=2000, value=st.session_state.chunk_size, step=100)
     st.session_state.chunk_overlap = st.slider("Chunk Overlap", min_value=0, max_value=500, value=st.session_state.chunk_overlap, step=50)
@@ -305,8 +416,17 @@ with tab4:
         chunk_overlap=st.session_state.chunk_overlap
     )
     preview_chunks = text_splitter.split_text(st.session_state.sample_text)
-    st.subheader("Chunk Preview")
-    st.write(format_chunks(preview_chunks))
+
+    # Highlight metadata in chunks
+    metadata_keywords = [kw for cat in config.METADATA_CATEGORIES.values() for sub in cat.values() for kw in sub]
+    highlighted_chunks = []
+    for chunk in preview_chunks:
+        for kw in metadata_keywords:
+            chunk = chunk.replace(kw, f"**{kw}**")
+        highlighted_chunks.append(chunk)
+
+    st.subheader("Chunk Preview with Highlighted Metadata")
+    st.write(format_chunks(highlighted_chunks))
 
     if st.button("Log Feedback for LoRA"):
         with open(config.FEEDBACK_LOG_PATH, "a", encoding="utf-8") as f:
@@ -319,56 +439,6 @@ with tab4:
             json.dump(feedback, f)
             f.write("\n")
         st.success("Feedback logged for LoRA dataset!")
-    
-    if category == "Dodaj Novu Kategoriju":
-        new_category = st.text_input("Naziv Nove Kategorije")
-        if st.button("Dodaj Kategoriju") and new_category:
-            metadata[new_category] = {}
-            save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
-            st.success(f"Dodata kategorija: {new_category}")
-            st.rerun()
-    else:
-        if st.button("Obriši Kategoriju"):
-            del metadata[category]
-            save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
-            st.success(f"Obrisana kategorija: {category}")
-            st.rerun()
-        
-        subcategory = st.selectbox("Izaberite Podkategoriju", list(metadata[category].keys()) + ["Dodaj Novu Podkategoriju"])
-        
-        if subcategory == "Dodaj Novu Podkategoriju":
-            new_sub = st.text_input("Naziv Nove Podkategorije")
-            if st.button("Dodaj Podkategoriju") and new_sub:
-                metadata[category][new_sub] = []
-                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
-                st.success(f"Dodata podkategorija: {new_sub}")
-                st.rerun()
-        else:
-            if st.button("Obriši Podkategoriju"):
-                del metadata[category][subcategory]
-                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
-                st.success(f"Obrisana podkategorija: {subcategory}")
-                st.rerun()
-            
-            st.subheader(f"Vrednosti za {subcategory}")
-            values = metadata[category][subcategory]
-            for i, val in enumerate(values):
-                new_val = st.text_input(f"Vrednost {i+1}", value=val, key=f"val_{category}_{subcategory}_{i}")
-                if new_val != val:
-                    values[i] = new_val
-            
-            if st.button("Sačuvaj Promene Vrednosti"):
-                metadata[category][subcategory] = [v for v in values if v]
-                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
-                st.success("Vrednosti ažurirane!")
-            
-            new_value = st.text_input("Dodaj Novu Vrednost")
-            if st.button("Dodaj Vrednost") and new_value:
-                values.append(new_value)
-                metadata[category][subcategory] = values
-                save_config({**st.session_state.config_data, 'METADATA_CATEGORIES': metadata})
-                st.success(f"Dodata vrednost: {new_value}")
-                st.rerun()
 
 # Status Sistema u Sidebaru
 with st.sidebar:

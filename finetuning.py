@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments
+from transformers import AutoModelForSeq2SeqLM, AutoTokenizer, Trainer, TrainingArguments
 from peft import LoraConfig, get_peft_model
 from datasets import load_from_disk
 import config
@@ -22,12 +22,22 @@ def finetune_model(dataset_path: str, output_dir: str, base_model: str = "Nerys/
 
     dataset = load_from_disk(dataset_path)
     tokenizer = AutoTokenizer.from_pretrained(base_model)
-    model = AutoModelForSequenceClassification.from_pretrained(base_model, num_labels=len(config.METADATA_CATEGORIES))
+    model = AutoModelForSeq2SeqLM.from_pretrained(base_model)
+
+    def preprocess_function(examples):
+        inputs = [f"Extract and correct metadata: {inp}" for inp in examples["input"]]
+        targets = examples["output"]
+        model_inputs = tokenizer(inputs, max_length=512, truncation=True)
+        labels = tokenizer(targets, max_length=512, truncation=True)
+        model_inputs["labels"] = labels["input_ids"]
+        return model_inputs
+
+    tokenized_dataset = dataset.map(preprocess_function, batched=True)
 
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
-        target_modules=["query", "value"],
+        target_modules=["q", "v"],
         lora_dropout=0.05,
         bias="none"
     )
@@ -36,17 +46,22 @@ def finetune_model(dataset_path: str, output_dir: str, base_model: str = "Nerys/
     training_args = TrainingArguments(
         output_dir=output_dir,
         num_train_epochs=3,
-        per_device_train_batch_size=8,
+        per_device_train_batch_size=4,
+        per_device_eval_batch_size=4,
         learning_rate=2e-4,
         fp16=True if config.DEFAULT_DEVICE == 'cuda' else False,
         save_steps=500,
-        logging_steps=100
+        logging_steps=100,
+        evaluation_strategy="steps",
+        eval_steps=500,
+        load_best_model_at_end=True
     )
 
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=dataset["train"],
+        train_dataset=tokenized_dataset["train"],
+        eval_dataset=tokenized_dataset["test"],
         tokenizer=tokenizer
     )
 

@@ -780,3 +780,48 @@ DOKAZ: saslušanje tužioca 1. reda kao stranke.
 2025-07-26 05:28:10,791 - DEBUG - response_closed.started
 2025-07-26 05:28:10,791 - DEBUG - response_closed.complete
 2025-07-26 05:28:10,792 - INFO - Dostupni modeli: []
+2025-07-26 07:52:29,826 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 07:52:30,401 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 07:52:30,701 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 07:52:30,706 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000022227735E70>
+2025-07-26 07:52:30,706 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 07:52:30,706 - DEBUG - send_request_headers.complete
+2025-07-26 07:52:30,706 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 07:52:30,707 - DEBUG - send_request_body.complete
+2025-07-26 07:52:30,707 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 07:52:30,713 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 05:52:30 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 07:52:30,713 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 07:52:30,713 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 07:52:30,713 - DEBUG - receive_response_body.complete
+2025-07-26 07:52:30,713 - DEBUG - response_closed.started
+2025-07-26 07:52:30,713 - DEBUG - response_closed.complete
+2025-07-26 07:52:30,714 - INFO - Dostupni modeli: []
+2025-07-26 07:52:31,146 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 07:52:31,147 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000022227735720>
+2025-07-26 07:52:31,147 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 07:52:31,147 - DEBUG - send_request_headers.complete
+2025-07-26 07:52:31,148 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 07:52:31,148 - DEBUG - send_request_body.complete
+2025-07-26 07:52:31,148 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 07:52:31,151 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 05:52:31 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 07:52:31,151 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 07:52:31,151 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 07:52:31,151 - DEBUG - receive_response_body.complete
+2025-07-26 07:52:31,151 - DEBUG - response_closed.started
+2025-07-26 07:52:31,151 - DEBUG - response_closed.complete
+2025-07-26 07:52:31,152 - INFO - Dostupni modeli: []
+2025-07-26 07:53:30,884 - INFO - Pokušaj dobijanja Ollama modela sa hosta: http://localhost:11434
+2025-07-26 07:53:31,485 - DEBUG - connect_tcp.started host='localhost' port=11434 local_address=None timeout=None socket_options=None
+2025-07-26 07:53:31,486 - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000002222788E4D0>
+2025-07-26 07:53:31,487 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-07-26 07:53:31,487 - DEBUG - send_request_headers.complete
+2025-07-26 07:53:31,487 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-07-26 07:53:31,487 - DEBUG - send_request_body.complete
+2025-07-26 07:53:31,487 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-07-26 07:53:31,491 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 26 Jul 2025 05:53:31 GMT'), (b'Content-Length', b'1328')])
+2025-07-26 07:53:31,491 - INFO - HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2025-07-26 07:53:31,491 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-07-26 07:53:31,492 - DEBUG - receive_response_body.complete
+2025-07-26 07:53:31,492 - DEBUG - response_closed.started
+2025-07-26 07:53:31,492 - DEBUG - response_closed.complete
+2025-07-26 07:53:31,492 - INFO - Dostupni modeli: []

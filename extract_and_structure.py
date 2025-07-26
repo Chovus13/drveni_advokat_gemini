@@ -148,6 +148,16 @@ def extract_metadata_from_text(text: str) -> dict:
 
     return metadata
 
+def generate_initial_lora_dataset(structured_data_list, output_path='initial_lora_dataset.jsonl'):
+    with open(output_path, 'w', encoding='utf-8') as f:
+        for data in structured_data_list:
+            lora_pair = {
+                "input": data["full_text"][:512],
+                "output": json.dumps(data["metadata"], ensure_ascii=False)
+            }
+            json.dump(lora_pair, f, ensure_ascii=False)
+            f.write('\n')
+
 def process_docx_files(source_dir: str, output_path: str):
     print(f"Započinjanje ekstrakcije iz direktorijuma: {source_dir}")
     all_files = [os.path.join(root, file) for root, _, files in os.walk(source_dir) for file in files if file.lower().endswith('.docx')]
@@ -155,6 +165,7 @@ def process_docx_files(source_dir: str, output_path: str):
         print("Nema .docx fajlova u navedenom direktorijumu.")
         return
     with open(output_path, 'w', encoding='utf-8') as outfile:
+        structured_data_list = []
         for file_path in tqdm(all_files, desc="Procesiranje dokumenata"):
             try:
                 document = docx.Document(file_path)
@@ -169,8 +180,10 @@ def process_docx_files(source_dir: str, output_path: str):
                 }
                 json.dump(structured_data, outfile, ensure_ascii=False)
                 outfile.write('\n')
+                structured_data_list.append(structured_data)
             except Exception as e:
                 logging.warning(f"Greška pri obradi fajla {file_path}: {e}")
+        generate_initial_lora_dataset(structured_data_list)
     print(f"\nEkstrakcija završena. Podaci sačuvani u: {output_path}")
 
 if __name__ == "__main__":
